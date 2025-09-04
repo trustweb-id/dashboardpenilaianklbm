@@ -415,8 +415,26 @@
         const csvUrlInput = document.getElementById('csvUrl');
         const loadUrlBtn = document.getElementById('loadUrlBtn');
 
-        // Upload area click handler
-        uploadArea.addEventListener('click', () => fileInput.click());
+        // Upload area click handler - Fixed
+        uploadArea.addEventListener('click', (e) => {
+            // Don't trigger if clicking on buttons
+            if (e.target.tagName === 'BUTTON' || e.target.closest('button')) {
+                return;
+            }
+            e.preventDefault();
+            fileInput.click();
+        });
+
+        // Make the button inside upload area work - Fixed
+        const uploadButton = uploadArea.querySelector('button');
+        if (uploadButton) {
+            uploadButton.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                console.log('Upload button clicked');
+                fileInput.click();
+            });
+        }
 
         // URL CSV loading
         loadUrlBtn.addEventListener('click', loadFromUrl);
@@ -433,28 +451,78 @@
                 return;
             }
 
+            console.log('Loading from URL:', url);
+
+            // Convert Google Sheets URL to CSV export format
+            let csvUrl = url;
+            if (url.includes('docs.google.com/spreadsheets')) {
+                const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+                if (match) {
+                    csvUrl = `https://docs.google.com/spreadsheets/d/${match[1]}/export?format=csv`;
+                    console.log('Converted Google Sheets URL to:', csvUrl);
+                }
+            }
+
             loadingInfo.classList.remove('hidden');
             fileInfo.classList.add('hidden');
 
             try {
-                const response = await fetch(url);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                console.log('Attempting to fetch from:', csvUrl);
+                
+                // Try multiple CORS proxies
+                const proxies = [
+                    'https://api.allorigins.win/raw?url=',
+                    'https://cors-anywhere.herokuapp.com/',
+                    'https://api.codetabs.com/v1/proxy?quest='
+                ];
+                
+                let success = false;
+                let csvText = '';
+                
+                for (const proxy of proxies) {
+                    try {
+                        const proxyUrl = proxy + encodeURIComponent(csvUrl);
+                        console.log('Trying proxy:', proxyUrl);
+                        
+                        const response = await fetch(proxyUrl);
+                        if (response.ok) {
+                            csvText = await response.text();
+                            console.log('Successfully loaded data, length:', csvText.length);
+                            success = true;
+                            break;
+                        }
+                    } catch (proxyError) {
+                        console.log('Proxy failed:', proxy, proxyError.message);
+                        continue;
+                    }
                 }
-                const csvText = await response.text();
                 
-                loadingInfo.classList.add('hidden');
-                parseCSV(csvText);
+                if (!success) {
+                    // Try direct fetch as last resort
+                    console.log('All proxies failed, trying direct fetch');
+                    const directResponse = await fetch(csvUrl);
+                    if (directResponse.ok) {
+                        csvText = await directResponse.text();
+                        success = true;
+                    }
+                }
                 
-                // Show success info
-                document.getElementById('fileName').textContent = 'Data dari URL CSV';
-                document.getElementById('dataCount').textContent = currentData.length;
-                fileInfo.classList.remove('hidden');
+                if (success && csvText) {
+                    loadingInfo.classList.add('hidden');
+                    parseCSV(csvText);
+                    
+                    // Show success info
+                    document.getElementById('fileName').textContent = 'Data dari URL CSV';
+                    document.getElementById('dataCount').textContent = currentData.length;
+                    fileInfo.classList.remove('hidden');
+                } else {
+                    throw new Error('Tidak dapat memuat data dari URL');
+                }
                 
             } catch (error) {
                 loadingInfo.classList.add('hidden');
-                alert('Gagal memuat data dari URL. Pastikan URL dapat diakses dan berformat CSV yang benar.');
                 console.error('Error loading CSV from URL:', error);
+                alert('Gagal memuat data dari URL. Coba:\n1. Pastikan URL dapat diakses publik\n2. Untuk Google Sheets, pastikan sharing diset ke "Anyone with the link"\n3. Atau upload file CSV langsung\n\nError: ' + error.message);
             }
         }
 
@@ -478,51 +546,149 @@
         });
 
         fileInput.addEventListener('change', (e) => {
-            if (e.target.files.length > 0) {
-                handleFile(e.target.files[0]);
+            console.log('File input changed:', e.target.files);
+            if (e.target.files && e.target.files.length > 0) {
+                const file = e.target.files[0];
+                console.log('Selected file:', file.name, file.type, file.size);
+                handleFile(file);
+            } else {
+                console.log('No file selected');
             }
         });
 
         function handleFile(file) {
+            console.log('=== HANDLING FILE ===');
+            console.log('File name:', file.name);
+            console.log('File type:', file.type);
+            console.log('File size:', file.size, 'bytes');
+            
             const fileName = file.name;
             const fileExtension = fileName.split('.').pop().toLowerCase();
+            console.log('File extension:', fileExtension);
 
             if (!['csv', 'xlsx', 'xls'].includes(fileExtension)) {
                 alert('Format file tidak didukung. Gunakan CSV, XLSX, atau XLS.');
                 return;
             }
 
+            // Show loading state
+            loadingInfo.classList.remove('hidden');
+            fileInfo.classList.add('hidden');
             document.getElementById('fileName').textContent = fileName;
+            console.log('Loading state shown');
 
             if (fileExtension === 'csv') {
+                console.log('Processing CSV file...');
                 const reader = new FileReader();
+                
                 reader.onload = (e) => {
-                    const csv = e.target.result;
-                    parseCSV(csv);
+                    console.log('CSV FileReader onload triggered');
+                    try {
+                        const csv = e.target.result;
+                        console.log('CSV content length:', csv.length);
+                        console.log('CSV preview (first 200 chars):', csv.substring(0, 200));
+                        
+                        parseCSV(csv);
+                        loadingInfo.classList.add('hidden');
+                        
+                        // Show success info
+                        document.getElementById('fileName').textContent = fileName;
+                        document.getElementById('dataCount').textContent = currentData.length;
+                        fileInfo.classList.remove('hidden');
+                        console.log('CSV processing completed successfully');
+                        
+                    } catch (error) {
+                        console.error('Error parsing CSV:', error);
+                        loadingInfo.classList.add('hidden');
+                        alert('Error parsing CSV file: ' + error.message);
+                    }
                 };
-                reader.readAsText(file);
+                
+                reader.onerror = (e) => {
+                    console.error('FileReader error:', e);
+                    loadingInfo.classList.add('hidden');
+                    alert('Error reading CSV file: ' + e.target.error);
+                };
+                
+                reader.onprogress = (e) => {
+                    console.log('Reading progress:', e.loaded, '/', e.total);
+                };
+                
+                console.log('Starting to read CSV file...');
+                reader.readAsText(file, 'UTF-8');
+                
             } else {
+                console.log('Processing Excel file...');
                 const reader = new FileReader();
+                
                 reader.onload = (e) => {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, { type: 'array' });
-                    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const csv = XLSX.utils.sheet_to_csv(firstSheet);
-                    parseCSV(csv);
+                    console.log('Excel FileReader onload triggered');
+                    try {
+                        const data = new Uint8Array(e.target.result);
+                        console.log('Excel data length:', data.length);
+                        
+                        const workbook = XLSX.read(data, { type: 'array' });
+                        console.log('Workbook sheets:', workbook.SheetNames);
+                        
+                        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                        const csv = XLSX.utils.sheet_to_csv(firstSheet);
+                        console.log('Converted to CSV, length:', csv.length);
+                        
+                        parseCSV(csv);
+                        loadingInfo.classList.add('hidden');
+                        
+                        // Show success info
+                        document.getElementById('fileName').textContent = fileName;
+                        document.getElementById('dataCount').textContent = currentData.length;
+                        fileInfo.classList.remove('hidden');
+                        console.log('Excel processing completed successfully');
+                        
+                    } catch (error) {
+                        console.error('Error parsing Excel:', error);
+                        loadingInfo.classList.add('hidden');
+                        alert('Error parsing Excel file: ' + error.message);
+                    }
                 };
+                
+                reader.onerror = (e) => {
+                    console.error('FileReader error:', e);
+                    loadingInfo.classList.add('hidden');
+                    alert('Error reading Excel file: ' + e.target.error);
+                };
+                
+                reader.onprogress = (e) => {
+                    console.log('Reading progress:', e.loaded, '/', e.total);
+                };
+                
+                console.log('Starting to read Excel file...');
                 reader.readAsArrayBuffer(file);
             }
         }
 
         function parseCSV(csv) {
-            const lines = csv.split('\n');
-            const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
+            console.log('Parsing CSV, length:', csv.length);
+            console.log('First 200 chars:', csv.substring(0, 200));
+            
+            if (!csv || csv.trim().length === 0) {
+                throw new Error('File CSV kosong atau tidak valid');
+            }
+            
+            const lines = csv.split(/\r?\n/); // Handle both \n and \r\n
+            console.log('Total lines:', lines.length);
+            
+            if (lines.length < 2) {
+                throw new Error('File CSV harus memiliki minimal header dan 1 baris data');
+            }
+            
+            const headers = parseCSVLine(lines[0]).map(h => h.trim().replace(/"/g, ''));
+            console.log('Headers found:', headers);
             
             currentData = [];
             for (let i = 1; i < lines.length; i++) {
-                if (lines[i].trim()) {
-                    const values = parseCSVLine(lines[i]);
-                    if (values.length >= headers.length) {
+                const line = lines[i].trim();
+                if (line) {
+                    const values = parseCSVLine(line);
+                    if (values.length > 0) {
                         const row = {};
                         headers.forEach((header, index) => {
                             row[header] = values[index] ? values[index].trim().replace(/"/g, '') : '';
@@ -532,14 +698,15 @@
                 }
             }
 
+            console.log('Parsed data rows:', currentData.length);
+            console.log('Sample row:', currentData[0]);
+
             if (currentData.length > 0) {
-                document.getElementById('dataCount').textContent = currentData.length;
-                fileInfo.classList.remove('hidden');
                 dashboardContent.classList.remove('hidden');
                 document.getElementById('previewBtn').disabled = false;
                 updateDashboard();
             } else {
-                alert('Tidak ada data yang valid ditemukan dalam file.');
+                throw new Error('Tidak ada data yang valid ditemukan dalam file. Pastikan file memiliki header dan data yang benar.');
             }
         }
 
@@ -2367,6 +2534,66 @@
                 updateDashboard();
             }
         });
+
+        // Add sample data button for testing
+        function loadSampleData() {
+            const sampleCSV = `Timestamp,Nama,Division,Instansi,Type,Rating,Reason,Feedback Umum
+2024-01-15 09:30:00,Ahmad Wijaya,IT,OJK DIY,Internal,4.5,"Pelayanan sangat baik dan responsif","Terus tingkatkan kualitas pelayanan"
+2024-01-15 10:15:00,Siti Nurhaliza,Keuangan,OJK DIY,Internal,4.2,"Staff ramah dan profesional","Perlu peningkatan di area kebersihan"
+2024-01-15 11:00:00,Budi Santoso,Operasional,OJK DIY,Internal,3.8,"Cukup baik tapi masih ada yang perlu diperbaiki","Sistem AC perlu diperbaiki"
+2024-01-15 14:30:00,Dr. Maya Sari,Akademisi,Universitas Gadjah Mada,External,4.0,"Fasilitas lengkap dan memadai","Parkir perlu diperluas"
+2024-01-15 15:45:00,Eko Prasetyo,Pengawasan,OJK DIY,Internal,3.5,"Pelayanan standar","Perlu pelatihan customer service"
+2024-01-16 08:00:00,Lisa Permata,Hukum,OJK DIY,Internal,4.8,"Excellent service, very satisfied","Keep up the good work"
+2024-01-16 09:30:00,Rudi Hartono,Konsultan,PT Mandiri Konsultan,External,3.2,"Kurang responsif dalam menangani keluhan","Perlu sistem complaint yang lebih baik"
+2024-01-16 10:15:00,Indira Sari,Komunikasi,OJK DIY,Internal,4.1,"Baik secara keseluruhan","Tingkatkan koordinasi antar divisi"
+2024-01-16 11:30:00,Prof. Bambang,Peneliti,LIPI,External,4.3,"Fasilitas penelitian sangat mendukung","Akses internet perlu dipercepat"
+2024-01-16 13:00:00,Dewi Lestari,SDM,OJK DIY,Internal,2.8,"Banyak hal yang perlu diperbaiki","Sistem booking ruangan tidak user-friendly"
+2024-01-17 08:30:00,Agus Setiawan,Teknologi,OJK DIY,Internal,4.6,"Infrastruktur IT sangat baik","Maintenance rutin perlu dijadwalkan"
+2024-01-17 10:00:00,Maria Santos,Auditor,KAP Santos & Partners,External,3.9,"Cukup memuaskan","Ruang meeting perlu sound system yang lebih baik"
+2024-01-17 14:15:00,Hendra Kusuma,Pemasaran,OJK DIY,Internal,3.1,"Masih banyak kekurangan","Staff perlu training komunikasi"
+2024-01-17 15:30:00,Dr. Ratna,Konsultan,Konsultan Independen,External,4.4,"Pelayanan profesional","Sistem keamanan sudah baik"
+2024-01-18 09:00:00,Yudi Pratama,Administrasi,OJK DIY,Internal,3.7,"Cukup baik tapi bisa lebih baik","Proses administrasi perlu disederhanakan"`;
+            
+            try {
+                parseCSV(sampleCSV);
+                document.getElementById('fileName').textContent = 'Data Contoh (Sample Data)';
+                document.getElementById('dataCount').textContent = currentData.length;
+                fileInfo.classList.remove('hidden');
+                alert('Data contoh berhasil dimuat! Anda dapat melihat dashboard dan mencoba fitur download PDF.');
+            } catch (error) {
+                console.error('Error loading sample data:', error);
+                alert('Error loading sample data: ' + error.message);
+            }
+        }
+
+        // Add sample data button to upload area
+        const sampleDataBtn = document.createElement('button');
+        sampleDataBtn.className = 'mt-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-2 rounded-xl font-medium transition-all duration-300 flex items-center space-x-2 mx-auto';
+        sampleDataBtn.innerHTML = '<i class="fas fa-database"></i><span>Muat Data Contoh</span>';
+        sampleDataBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Sample data button clicked');
+            loadSampleData();
+        });
+        uploadArea.appendChild(sampleDataBtn);
+
+        // Add debug button for testing file input
+        const debugBtn = document.createElement('button');
+        debugBtn.className = 'mt-2 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 mx-auto text-sm';
+        debugBtn.innerHTML = '<i class="fas fa-bug"></i><span>Test File Input</span>';
+        debugBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('=== DEBUG TEST ===');
+            console.log('File input element:', fileInput);
+            console.log('File input type:', fileInput.type);
+            console.log('File input accept:', fileInput.accept);
+            console.log('Upload area element:', uploadArea);
+            console.log('Triggering file input click...');
+            fileInput.click();
+        });
+        uploadArea.appendChild(debugBtn);
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979c828af401f8f8',t:'MTc1Njk3ODY2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979cac1f5645ce61',t:'MTc1Njk4MDM2Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
