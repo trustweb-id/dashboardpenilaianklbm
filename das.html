@@ -42,10 +42,10 @@
             box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
         .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #800020 0%, #a52a2a 100%);
         }
         .icon-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #800020 0%, #a52a2a 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -604,18 +604,18 @@
                         label: 'Jumlah Responden',
                         data: [ratingCounts[1], ratingCounts[2], ratingCounts[3], ratingCounts[4], ratingCounts[5]],
                         backgroundColor: [
-                            'rgba(239, 68, 68, 0.8)',
-                            'rgba(249, 115, 22, 0.8)',
-                            'rgba(234, 179, 8, 0.8)',
-                            'rgba(34, 197, 94, 0.8)',
-                            'rgba(22, 163, 74, 0.8)'
+                            'rgba(128, 0, 32, 0.8)',
+                            'rgba(165, 42, 42, 0.8)',
+                            'rgba(205, 92, 92, 0.8)',
+                            'rgba(220, 20, 60, 0.8)',
+                            'rgba(178, 34, 34, 0.8)'
                         ],
                         borderColor: [
-                            'rgba(220, 38, 38, 1)',
-                            'rgba(234, 88, 12, 1)',
-                            'rgba(202, 138, 4, 1)',
-                            'rgba(22, 163, 74, 1)',
-                            'rgba(21, 128, 61, 1)'
+                            'rgba(128, 0, 32, 1)',
+                            'rgba(165, 42, 42, 1)',
+                            'rgba(205, 92, 92, 1)',
+                            'rgba(220, 20, 60, 1)',
+                            'rgba(178, 34, 34, 1)'
                         ],
                         borderWidth: 2,
                         borderRadius: 8,
@@ -670,12 +670,12 @@
                     datasets: [{
                         data: [internal, external],
                         backgroundColor: [
-                            'rgba(59, 130, 246, 0.8)',
-                            'rgba(245, 158, 11, 0.8)'
+                            'rgba(128, 0, 32, 0.8)',
+                            'rgba(205, 92, 92, 0.8)'
                         ],
                         borderColor: [
-                            'rgba(37, 99, 235, 1)',
-                            'rgba(217, 119, 6, 1)'
+                            'rgba(128, 0, 32, 1)',
+                            'rgba(205, 92, 92, 1)'
                         ],
                         borderWidth: 3,
                         hoverOffset: 4
@@ -1651,117 +1651,196 @@
             
             let yPosition = margin;
 
-            // Header with logo placeholder
-            doc.setFillColor(102, 126, 234);
-            doc.rect(0, 0, pageWidth, 25, 'F');
+            // Maroon color scheme
+            const maroonDark = [128, 0, 32];   // Dark maroon
+            const maroonMed = [165, 42, 42];   // Medium maroon  
+            const maroonLight = [205, 92, 92]; // Light maroon
+            const maroonBg = [250, 240, 240];  // Very light maroon background
+
+            // Header with maroon theme
+            doc.setFillColor(...maroonDark);
+            doc.rect(0, 0, pageWidth, 30, 'F');
             
             doc.setTextColor(255, 255, 255);
             doc.setFont('helvetica', 'bold');
-            doc.setFontSize(18);
-            doc.text('LAPORAN EVALUASI BUILDING MANAGEMENT', margin, 15);
+            doc.setFontSize(20);
+            doc.text('LAPORAN EVALUASI BUILDING MANAGEMENT', margin, 18);
             
             doc.setFontSize(12);
-            doc.text('Otoritas Jasa Keuangan - Daerah Istimewa Yogyakarta', margin, 20);
+            doc.text('Otoritas Jasa Keuangan - Daerah Istimewa Yogyakarta', margin, 25);
             
-            yPosition = 35;
+            yPosition = 40;
             doc.setTextColor(0, 0, 0);
 
-            // Executive Summary
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(14);
-            doc.text('RINGKASAN EKSEKUTIF', margin, yPosition);
-            yPosition += 8;
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-            
+            // Calculate data for report
             const ratings = currentData.map(d => parseFloat(d.Rating)).filter(r => !isNaN(r));
             const avgRating = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
             const internal = currentData.filter(d => d.Type && d.Type.toLowerCase().includes('internal')).length;
             const external = currentData.length - internal;
 
-            const executiveSummary = [
-                `Periode Evaluasi: ${new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long' })}`,
-                `Total Responden: ${currentData.length} orang (${internal} internal, ${external} eksternal)`,
-                `Rating Rata-rata: ${avgRating.toFixed(2)}/5.0`,
-                `Status Kinerja: ${avgRating >= 4 ? 'EXCELLENT' : avgRating >= 3 ? 'BAIK' : 'PERLU PERBAIKAN'}`,
-                `Tingkat Partisipasi: ${((currentData.length / Math.max(currentData.length, 50)) * 100).toFixed(1)}%`
+            // Helper function to add section header
+            function addSectionHeader(title, yPos) {
+                doc.setFillColor(...maroonMed);
+                doc.rect(margin, yPos - 5, contentWidth, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(12);
+                doc.text(title, margin + 2, yPos);
+                doc.setTextColor(0, 0, 0);
+                return yPos + 10;
+            }
+
+            // Helper function to create tables
+            function createTable(headers, data, startY, colWidths) {
+                let currentY = startY;
+                
+                // Header row
+                doc.setFillColor(...maroonLight);
+                doc.rect(margin, currentY, contentWidth, 8, 'F');
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(9);
+                doc.setTextColor(255, 255, 255);
+                
+                let xPos = margin + 2;
+                headers.forEach((header, i) => {
+                    doc.text(header, xPos, currentY + 5);
+                    xPos += colWidths[i];
+                });
+                
+                currentY += 8;
+                doc.setTextColor(0, 0, 0);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(8);
+                
+                // Data rows
+                data.forEach((row, index) => {
+                    if (currentY > pageHeight - 30) {
+                        doc.addPage();
+                        currentY = margin;
+                    }
+                    
+                    // Alternate row colors
+                    if (index % 2 === 0) {
+                        doc.setFillColor(...maroonBg);
+                        doc.rect(margin, currentY, contentWidth, 6, 'F');
+                    }
+                    
+                    xPos = margin + 2;
+                    row.forEach((cell, i) => {
+                        const cellText = doc.splitTextToSize(String(cell), colWidths[i] - 4);
+                        doc.text(cellText[0] || '', xPos, currentY + 4);
+                        xPos += colWidths[i];
+                    });
+                    currentY += 6;
+                });
+                
+                return currentY + 5;
+            }
+
+            // Executive Summary with table
+            yPosition = addSectionHeader('RINGKASAN EKSEKUTIF', yPosition);
+            
+            const summaryData = [
+                ['Periode Evaluasi', new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long' })],
+                ['Total Responden', `${currentData.length} orang`],
+                ['Responden Internal', `${internal} orang (${((internal/currentData.length)*100).toFixed(1)}%)`],
+                ['Responden Eksternal', `${external} orang (${((external/currentData.length)*100).toFixed(1)}%)`],
+                ['Rating Rata-rata', `${avgRating.toFixed(2)}/5.0`],
+                ['Status Kinerja', avgRating >= 4 ? 'EXCELLENT' : avgRating >= 3 ? 'BAIK' : 'PERLU PERBAIKAN'],
+                ['Standar Deviasi', calculateStandardDeviation(ratings).toFixed(2)],
+                ['Median Rating', calculateMedian(ratings).toFixed(1)]
             ];
+            
+            yPosition = createTable(['Indikator', 'Nilai'], summaryData, yPosition, [60, 120]);
 
-            executiveSummary.forEach(item => {
-                doc.text(item, margin, yPosition);
-                yPosition += 5;
-            });
-
-            yPosition += 8;
-
-            // Detailed Analysis
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(14);
-            doc.text('ANALISIS DETAIL EVALUASI', margin, yPosition);
-            yPosition += 8;
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-
-            // Rating Distribution Analysis
+            // Rating Distribution Table
+            yPosition = addSectionHeader('DISTRIBUSI RATING', yPosition);
+            
             const ratingCounts = {};
             for (let i = 1; i <= 5; i++) {
                 ratingCounts[i] = ratings.filter(r => Math.floor(r) === i).length;
             }
-
-            const distributionAnalysis = [
-                '1. DISTRIBUSI RATING:',
-                `   • Rating 5 (Sangat Baik): ${ratingCounts[5]} responden (${((ratingCounts[5]/ratings.length)*100).toFixed(1)}%)`,
-                `   • Rating 4 (Baik): ${ratingCounts[4]} responden (${((ratingCounts[4]/ratings.length)*100).toFixed(1)}%)`,
-                `   • Rating 3 (Cukup): ${ratingCounts[3]} responden (${((ratingCounts[3]/ratings.length)*100).toFixed(1)}%)`,
-                `   • Rating 2 (Kurang): ${ratingCounts[2]} responden (${((ratingCounts[2]/ratings.length)*100).toFixed(1)}%)`,
-                `   • Rating 1 (Sangat Kurang): ${ratingCounts[1]} responden (${((ratingCounts[1]/ratings.length)*100).toFixed(1)}%)`,
-                '',
-                '2. ANALISIS KOMPOSISI RESPONDEN:',
-                `   • Responden Internal: ${internal} orang (${((internal/currentData.length)*100).toFixed(1)}%)`,
-                `   • Responden Eksternal: ${external} orang (${((external/currentData.length)*100).toFixed(1)}%)`,
-                `   • Rasio Internal:Eksternal = ${internal}:${external}`,
-                ''
+            
+            const ratingData = [
+                ['Rating 5 (Sangat Baik)', ratingCounts[5], `${((ratingCounts[5]/ratings.length)*100).toFixed(1)}%`],
+                ['Rating 4 (Baik)', ratingCounts[4], `${((ratingCounts[4]/ratings.length)*100).toFixed(1)}%`],
+                ['Rating 3 (Cukup)', ratingCounts[3], `${((ratingCounts[3]/ratings.length)*100).toFixed(1)}%`],
+                ['Rating 2 (Kurang)', ratingCounts[2], `${((ratingCounts[2]/ratings.length)*100).toFixed(1)}%`],
+                ['Rating 1 (Sangat Kurang)', ratingCounts[1], `${((ratingCounts[1]/ratings.length)*100).toFixed(1)}%`]
             ];
+            
+            yPosition = createTable(['Kategori Rating', 'Jumlah', 'Persentase'], ratingData, yPosition, [80, 40, 60]);
 
-            distributionAnalysis.forEach(line => {
-                if (yPosition > pageHeight - 20) {
-                    doc.addPage();
-                    yPosition = margin;
-                }
-                doc.text(line, margin, yPosition);
-                yPosition += 4;
-            });
+            // Division Rankings - Internal Assessment
+            yPosition = addSectionHeader('RANKING DIVISI (PENILAIAN INTERNAL)', yPosition);
+            
+            const internalData = currentData.filter(d => d.Type && d.Type.toLowerCase().includes('internal'));
+            const internalDivisionRanking = calculateDivisionRanking(internalData);
+            
+            if (internalDivisionRanking.length > 0) {
+                const internalDivData = internalDivisionRanking.slice(0, 10).map((div, index) => [
+                    index + 1,
+                    div.division,
+                    div.avgRating.toFixed(2),
+                    div.totalResponses,
+                    div.uniqueRespondents
+                ]);
+                
+                yPosition = createTable(['Rank', 'Divisi', 'Avg Rating', 'Total Respon', 'Responden'], internalDivData, yPosition, [20, 70, 30, 30, 30]);
+            }
 
-            // Performance Analysis
-            const performanceAnalysis = [
-                '3. ANALISIS KINERJA:',
-                `   • Skor Rata-rata: ${avgRating.toFixed(2)}/5.0`,
-                `   • Standar Deviasi: ${calculateStandardDeviation(ratings).toFixed(2)}`,
-                `   • Median: ${calculateMedian(ratings).toFixed(1)}`,
-                `   • Modus: ${calculateMode(ratings)}`,
-                ''
-            ];
+            // Division Rankings - External Assessment  
+            yPosition = addSectionHeader('RANKING DIVISI (PENILAIAN EKSTERNAL)', yPosition);
+            
+            const externalData = currentData.filter(d => d.Type && !d.Type.toLowerCase().includes('internal'));
+            const externalDivisionRanking = calculateDivisionRanking(externalData);
+            
+            if (externalDivisionRanking.length > 0) {
+                const externalDivData = externalDivisionRanking.slice(0, 10).map((div, index) => [
+                    index + 1,
+                    div.division,
+                    div.avgRating.toFixed(2),
+                    div.totalResponses,
+                    div.uniqueRespondents
+                ]);
+                
+                yPosition = createTable(['Rank', 'Divisi', 'Avg Rating', 'Total Respon', 'Responden'], externalDivData, yPosition, [20, 70, 30, 30, 30]);
+            }
 
-            performanceAnalysis.forEach(line => {
-                if (yPosition > pageHeight - 20) {
-                    doc.addPage();
-                    yPosition = margin;
-                }
-                doc.text(line, margin, yPosition);
-                yPosition += 4;
-            });
+            // Individual Rankings - Internal
+            yPosition = addSectionHeader('RANKING RESPONDEN INTERNAL', yPosition);
+            
+            const internalRanking = calculateRanking(internalData);
+            if (internalRanking.length > 0) {
+                const internalRankData = internalRanking.slice(0, 10).map((person, index) => [
+                    index + 1,
+                    person.name,
+                    person.division || person.instansi || '-',
+                    person.avgRating.toFixed(2),
+                    person.totalResponses
+                ]);
+                
+                yPosition = createTable(['Rank', 'Nama', 'Divisi/Instansi', 'Avg Rating', 'Respon'], internalRankData, yPosition, [20, 60, 50, 25, 25]);
+            }
 
-            // Lowest Scoring Teams
-            yPosition += 5;
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12);
-            doc.text('TIM/DIVISI DENGAN NILAI TERENDAH', margin, yPosition);
-            yPosition += 6;
+            // Individual Rankings - External
+            yPosition = addSectionHeader('RANKING RESPONDEN EKSTERNAL', yPosition);
+            
+            const externalRanking = calculateRanking(externalData);
+            if (externalRanking.length > 0) {
+                const externalRankData = externalRanking.slice(0, 10).map((person, index) => [
+                    index + 1,
+                    person.name,
+                    person.division || person.instansi || '-',
+                    person.avgRating.toFixed(2),
+                    person.totalResponses
+                ]);
+                
+                yPosition = createTable(['Rank', 'Nama', 'Divisi/Instansi', 'Avg Rating', 'Respon'], externalRankData, yPosition, [20, 60, 50, 25, 25]);
+            }
 
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
+            // Lowest Scoring Teams Table
+            yPosition = addSectionHeader('TIM/DIVISI DENGAN NILAI TERENDAH', yPosition);
 
             // Get lowest scoring teams for PDF
             const allDivisionDataPDF = {};
@@ -1787,211 +1866,468 @@
                 }))
                 .filter(div => div.avgRating > 0)
                 .sort((a, b) => a.avgRating - b.avgRating)
-                .slice(0, 5);
+                .slice(0, 8);
 
             if (lowestScoringPDF.length > 0) {
-                lowestScoringPDF.forEach((team, index) => {
-                    if (yPosition > pageHeight - 25) {
-                        doc.addPage();
-                        yPosition = margin;
-                    }
-                    doc.text(`${index + 1}. ${team.division}: ${team.avgRating.toFixed(1)}/5.0`, margin, yPosition);
-                    yPosition += 4;
-                    doc.text(`   Rating rendah: ${team.lowRatings} dari ${team.ratings.length} respon`, margin, yPosition);
-                    yPosition += 4;
-                    if (team.feedback.length > 0) {
-                        const feedbackText = `   Feedback: "${team.feedback[0].substring(0, 80)}${team.feedback[0].length > 80 ? '...' : ''}"`;
-                        doc.text(feedbackText, margin, yPosition);
-                        yPosition += 4;
-                    }
-                    yPosition += 2;
-                });
+                const lowestTeamsData = lowestScoringPDF.map((team, index) => [
+                    index + 1,
+                    team.division,
+                    team.avgRating.toFixed(2),
+                    team.ratings.length,
+                    team.lowRatings,
+                    `${((team.lowRatings/team.ratings.length)*100).toFixed(1)}%`
+                ]);
+                
+                yPosition = createTable(['Rank', 'Divisi', 'Avg Rating', 'Total Respon', 'Rating <3', '% Rating Rendah'], lowestTeamsData, yPosition, [20, 50, 25, 25, 25, 35]);
             } else {
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(10);
                 doc.text('Semua tim/divisi memiliki performa yang baik (rating >= 3.0)', margin, yPosition);
-                yPosition += 6;
+                yPosition += 10;
             }
 
-            // Criticism and Suggestions
-            yPosition += 5;
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12);
-            doc.text('KRITIK & SARAN UTAMA', margin, yPosition);
-            yPosition += 6;
+            // Complete Feedback Section
+            yPosition = addSectionHeader('SELURUH KRITIK & SARAN RESPONDEN', yPosition);
 
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-
-            // Get top feedback for PDF
+            // Get ALL feedback for PDF
             const allFeedbackPDF = [];
-            currentData.forEach(d => {
-                const responder = d.Nama || 'Anonim';
+            currentData.forEach((d, index) => {
+                const responder = d.Nama || `Responden ${index + 1}`;
+                const division = d.Division || 'Tidak Diketahui';
                 const rating = parseFloat(d.Rating) || 0;
+                const type = d.Type || 'Tidak Diketahui';
                 
+                // Collect all types of feedback
                 if (d.Reason && d.Reason.trim()) {
                     allFeedbackPDF.push({
-                        content: d.Reason.trim(),
                         responder: responder,
-                        rating: rating
+                        division: division,
+                        type: type,
+                        rating: rating,
+                        feedbackType: 'Alasan Rating',
+                        content: d.Reason.trim()
                     });
                 }
                 
                 if (d['Feedback Umum'] && d['Feedback Umum'].trim()) {
                     allFeedbackPDF.push({
-                        content: d['Feedback Umum'].trim(),
                         responder: responder,
-                        rating: rating
+                        division: division,
+                        type: type,
+                        rating: rating,
+                        feedbackType: 'Feedback Umum',
+                        content: d['Feedback Umum'].trim()
                     });
                 }
+
+                // Check for other feedback columns
+                Object.keys(d).forEach(key => {
+                    if ((key.toLowerCase().includes('saran') || 
+                         key.toLowerCase().includes('kritik') || 
+                         key.toLowerCase().includes('komentar') ||
+                         key.toLowerCase().includes('masukan')) && 
+                        d[key] && d[key].trim() && 
+                        d[key].trim() !== d.Reason && 
+                        d[key].trim() !== d['Feedback Umum']) {
+                        allFeedbackPDF.push({
+                            responder: responder,
+                            division: division,
+                            type: type,
+                            rating: rating,
+                            feedbackType: key,
+                            content: d[key].trim()
+                        });
+                    }
+                });
             });
 
-            const topFeedbackPDF = allFeedbackPDF
-                .filter(f => f.content.length > 10)
-                .sort((a, b) => a.rating - b.rating)
-                .slice(0, 8);
+            // Sort by rating (lowest first) and create table
+            const sortedFeedbackPDF = allFeedbackPDF
+                .filter(f => f.content.length > 5)
+                .sort((a, b) => a.rating - b.rating);
 
-            if (topFeedbackPDF.length > 0) {
-                topFeedbackPDF.forEach((feedback, index) => {
-                    if (yPosition > pageHeight - 30) {
-                        doc.addPage();
-                        yPosition = margin;
+            if (sortedFeedbackPDF.length > 0) {
+                // Create feedback table with better formatting
+                let feedbackTableData = [];
+                
+                sortedFeedbackPDF.forEach((feedback, index) => {
+                    // Truncate long content for table display
+                    let shortContent = feedback.content;
+                    if (shortContent.length > 60) {
+                        shortContent = shortContent.substring(0, 60) + '...';
                     }
-                    doc.text(`${index + 1}. ${feedback.responder} (Rating: ${feedback.rating.toFixed(1)})`, margin, yPosition);
-                    yPosition += 4;
                     
-                    // Split long feedback text
-                    const feedbackLines = doc.splitTextToSize(`   "${feedback.content}"`, contentWidth - 10);
-                    feedbackLines.forEach(line => {
-                        if (yPosition > pageHeight - 20) {
+                    feedbackTableData.push([
+                        index + 1,
+                        feedback.responder,
+                        feedback.division,
+                        feedback.rating.toFixed(1),
+                        feedback.feedbackType,
+                        shortContent
+                    ]);
+                });
+                
+                yPosition = createTable(['No', 'Responden', 'Divisi', 'Rating', 'Jenis', 'Feedback'], feedbackTableData, yPosition, [15, 35, 30, 20, 25, 55]);
+                
+                // Add detailed feedback section
+                yPosition += 5;
+                yPosition = addSectionHeader('DETAIL FEEDBACK LENGKAP', yPosition);
+                
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(8);
+                
+                sortedFeedbackPDF.forEach((feedback, index) => {
+                    if (yPosition > pageHeight - 40) {
+                        doc.addPage();
+                        yPosition = margin + 10;
+                    }
+                    
+                    // Feedback header
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(`${index + 1}. ${feedback.responder} (${feedback.division}) - Rating: ${feedback.rating.toFixed(1)}`, margin, yPosition);
+                    yPosition += 5;
+                    
+                    doc.setFont('helvetica', 'italic');
+                    doc.text(`Jenis: ${feedback.feedbackType} | Tipe Responden: ${feedback.type}`, margin + 5, yPosition);
+                    yPosition += 5;
+                    
+                    // Feedback content
+                    doc.setFont('helvetica', 'normal');
+                    const contentLines = doc.splitTextToSize(`"${feedback.content}"`, contentWidth - 10);
+                    contentLines.forEach(line => {
+                        if (yPosition > pageHeight - 25) {
                             doc.addPage();
-                            yPosition = margin;
+                            yPosition = margin + 10;
                         }
-                        doc.text(line, margin, yPosition);
+                        doc.text(line, margin + 5, yPosition);
                         yPosition += 4;
                     });
-                    yPosition += 2;
+                    yPosition += 3;
                 });
+                
             } else {
-                doc.text('Tidak ada kritik atau saran khusus yang perlu ditindaklanjuti', margin, yPosition);
-                yPosition += 6;
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(10);
+                doc.text('Tidak ada feedback yang tersedia dari responden', margin, yPosition);
+                yPosition += 10;
             }
 
-            // Division Rankings
-            yPosition += 5;
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12);
-            doc.text('RANKING DIVISI', margin, yPosition);
-            yPosition += 6;
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-
-            // Internal Division Ranking
-            const internalData = currentData.filter(d => d.Type && d.Type.toLowerCase().includes('internal'));
-            const internalDivisionRanking = calculateDivisionRanking(internalData);
+            // Observasi dan Analisis Mendalam
+            yPosition = addSectionHeader('OBSERVASI DAN ANALISIS MENDALAM', yPosition);
             
-            doc.text('Berdasarkan Penilaian Internal:', margin, yPosition);
-            yPosition += 5;
-
-            internalDivisionRanking.slice(0, 5).forEach((div, index) => {
-                if (yPosition > pageHeight - 20) {
-                    doc.addPage();
-                    yPosition = margin;
-                }
-                doc.text(`${index + 1}. ${div.division}: ${div.avgRating.toFixed(1)}/5.0 (${div.totalResponses} respon)`, margin + 5, yPosition);
-                yPosition += 4;
-            });
-
-            yPosition += 3;
-            const externalData = currentData.filter(d => d.Type && !d.Type.toLowerCase().includes('internal'));
-            const externalDivisionRanking = calculateDivisionRanking(externalData);
-            
-            doc.text('Berdasarkan Penilaian Eksternal:', margin, yPosition);
-            yPosition += 5;
-
-            externalDivisionRanking.slice(0, 5).forEach((div, index) => {
-                if (yPosition > pageHeight - 20) {
-                    doc.addPage();
-                    yPosition = margin;
-                }
-                doc.text(`${index + 1}. ${div.division}: ${div.avgRating.toFixed(1)}/5.0 (${div.totalResponses} respon)`, margin + 5, yPosition);
-                yPosition += 4;
-            });
-
-            // Key Findings
-            yPosition += 8;
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12);
-            doc.text('TEMUAN UTAMA', margin, yPosition);
-            yPosition += 6;
-
             doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-
-            const keyFindings = [
-                `• Tingkat kepuasan keseluruhan: ${avgRating >= 4 ? 'Tinggi' : avgRating >= 3 ? 'Sedang' : 'Rendah'} (${avgRating.toFixed(1)}/5.0)`,
-                `• Konsistensi penilaian: ${calculateStandardDeviation(ratings) < 1 ? 'Konsisten' : 'Bervariasi'} (SD: ${calculateStandardDeviation(ratings).toFixed(2)})`,
-                `• Partisipasi responden: ${currentData.length >= 30 ? 'Memadai' : 'Perlu ditingkatkan'} (${currentData.length} responden)`,
-                `• Keseimbangan perspektif: ${Math.abs(internal - external) <= 10 ? 'Seimbang' : 'Tidak seimbang'} (Internal: ${internal}, Eksternal: ${external})`,
-                `• Area yang perlu perhatian: ${ratingCounts[1] + ratingCounts[2] > 0 ? `${ratingCounts[1] + ratingCounts[2]} responden memberikan rating rendah` : 'Tidak ada rating rendah'}`
+            doc.setFontSize(9);
+            
+            // Statistical Analysis
+            const median = calculateMedian(ratings);
+            const mode = calculateMode(ratings);
+            const stdDev = calculateStandardDeviation(ratings);
+            const lowRatings = ratings.filter(r => r < 3).length;
+            const highRatings = ratings.filter(r => r >= 4).length;
+            
+            const observations = [
+                `1. ANALISIS STATISTIK DESKRIPTIF:`,
+                `   • Mean (Rata-rata): ${avgRating.toFixed(2)} menunjukkan ${avgRating >= 4 ? 'kinerja excellent' : avgRating >= 3.5 ? 'kinerja baik' : avgRating >= 3 ? 'kinerja cukup' : 'kinerja perlu perbaikan'}`,
+                `   • Median: ${median.toFixed(2)} ${median > avgRating ? '(distribusi condong ke kiri)' : median < avgRating ? '(distribusi condong ke kanan)' : '(distribusi simetris)'}`,
+                `   • Modus: ${mode} (rating yang paling sering diberikan)`,
+                `   • Standar Deviasi: ${stdDev.toFixed(2)} ${stdDev < 0.5 ? '(konsistensi tinggi)' : stdDev < 1 ? '(konsistensi sedang)' : '(variabilitas tinggi)'}`,
+                ``,
+                `2. DISTRIBUSI KEPUASAN:`,
+                `   • Rating Tinggi (≥4): ${highRatings} responden (${((highRatings/ratings.length)*100).toFixed(1)}%)`,
+                `   • Rating Rendah (<3): ${lowRatings} responden (${((lowRatings/ratings.length)*100).toFixed(1)}%)`,
+                `   • Tingkat Kepuasan: ${((highRatings/ratings.length)*100).toFixed(1)}% responden puas/sangat puas`,
+                ``,
+                `3. ANALISIS KOMPARATIF INTERNAL VS EKSTERNAL:`,
+                `   • Responden Internal: ${internal} orang memberikan perspektif dari dalam organisasi`,
+                `   • Responden Eksternal: ${external} orang memberikan perspektif objektif dari luar`,
+                `   • Rasio Partisipasi: ${internal}:${external} ${Math.abs(internal-external) <= 5 ? '(seimbang)' : internal > external ? '(dominasi internal)' : '(dominasi eksternal)'}`,
+                ``
             ];
 
-            keyFindings.forEach(finding => {
-                if (yPosition > pageHeight - 20) {
-                    doc.addPage();
-                    yPosition = margin;
-                }
-                doc.text(finding, margin, yPosition);
-                yPosition += 5;
-            });
-
-            // Recommendations
-            yPosition += 8;
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(12);
-            doc.text('REKOMENDASI STRATEGIS', margin, yPosition);
-            yPosition += 6;
-
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(10);
-
-            const recommendations = [
-                '1. JANGKA PENDEK (1-3 bulan):',
-                '   • Tindak lanjut segera untuk rating di bawah 3.0',
-                '   • Perbaikan komunikasi dengan stakeholder eksternal',
-                '   • Peningkatan responsivitas layanan',
-                '',
-                '2. JANGKA MENENGAH (3-6 bulan):',
-                '   • Implementasi sistem monitoring kualitas real-time',
-                '   • Pelatihan komprehensif untuk seluruh staff',
-                '   • Standardisasi prosedur operasional',
-                '',
-                '3. JANGKA PANJANG (6-12 bulan):',
-                '   • Pengembangan sistem feedback berkelanjutan',
-                '   • Evaluasi dan penyesuaian struktur organisasi',
-                '   • Implementasi teknologi untuk efisiensi layanan'
-            ];
-
-            recommendations.forEach(rec => {
-                if (yPosition > pageHeight - 20) {
-                    doc.addPage();
-                    yPosition = margin;
-                }
-                doc.text(rec, margin, yPosition);
-                yPosition += 4;
-            });
-
-            // Footer
-            const totalPages = doc.internal.getNumberOfPages();
-            for (let i = 1; i <= totalPages; i++) {
-                doc.setPage(i);
-                doc.setFontSize(8);
-                doc.setTextColor(128, 128, 128);
-                doc.text(`Halaman ${i} dari ${totalPages}`, pageWidth - 30, pageHeight - 10);
-                doc.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, margin, pageHeight - 10);
+            // Add performance insights
+            if (avgRating >= 4.0) {
+                observations.push(
+                    `4. INSIGHT KINERJA EXCELLENT:`,
+                    `   • Building management telah mencapai standar excellent dengan rating ${avgRating.toFixed(2)}`,
+                    `   • Konsistensi pelayanan ${stdDev < 0.5 ? 'sangat baik' : 'perlu dipertahankan'}`,
+                    `   • Fokus pada inovasi dan peningkatan berkelanjutan untuk mempertahankan prestasi`,
+                    ``
+                );
+            } else if (avgRating >= 3.0) {
+                observations.push(
+                    `4. INSIGHT AREA PERBAIKAN:`,
+                    `   • Terdapat ${lowRatings} responden (${((lowRatings/ratings.length)*100).toFixed(1)}%) yang memberikan rating rendah`,
+                    `   • Gap antara ekspektasi dan realitas perlu diatasi melalui perbaikan sistematis`,
+                    `   • Potensi peningkatan rating sebesar ${(4.0 - avgRating).toFixed(2)} poin dengan perbaikan targeted`,
+                    ``
+                );
+            } else {
+                observations.push(
+                    `4. INSIGHT PERBAIKAN MENDESAK:`,
+                    `   • Rating di bawah 3.0 menunjukkan ketidakpuasan yang signifikan`,
+                    `   • Diperlukan evaluasi menyeluruh terhadap sistem dan prosedur`,
+                    `   • Implementasi quick wins dan long-term improvement strategy`,
+                    ``
+                );
             }
 
-            // Save PDF
-            doc.save(`Laporan_Evaluasi_Building_Management_OJK_DIY_${new Date().toISOString().split('T')[0]}.pdf`);
+            // Add trend analysis if possible
+            observations.push(
+                `5. REKOMENDASI BERDASARKAN OBSERVASI:`,
+                `   • Prioritas Utama: ${lowRatings > 0 ? 'Mengatasi feedback rating rendah' : 'Mempertahankan kualitas tinggi'}`,
+                `   • Fokus Pengembangan: ${stdDev > 1 ? 'Standardisasi pelayanan' : 'Inovasi dan peningkatan'}`,
+                `   • Strategi Komunikasi: ${Math.abs(internal-external) > 10 ? 'Meningkatkan partisipasi yang kurang' : 'Mempertahankan keseimbangan perspektif'}`,
+                ``
+            );
+
+            observations.forEach(line => {
+                if (yPosition > pageHeight - 25) {
+                    doc.addPage();
+                    yPosition = margin + 10;
+                }
+                doc.text(line, margin, yPosition);
+                yPosition += 4;
+            });
+
+            // Add Charts to PDF
+            yPosition += 10;
+            yPosition = addSectionHeader('VISUALISASI DATA', yPosition);
+            
+            // Create a temporary canvas for chart generation
+            const tempCanvas = document.createElement('canvas');
+            tempCanvas.width = 400;
+            tempCanvas.height = 300;
+            const tempCtx = tempCanvas.getContext('2d');
+            
+            try {
+                // Rating Distribution Chart
+                const ratingChart = new Chart(tempCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['Rating 1', 'Rating 2', 'Rating 3', 'Rating 4', 'Rating 5'],
+                        datasets: [{
+                            label: 'Jumlah Responden',
+                            data: [ratingCounts[1], ratingCounts[2], ratingCounts[3], ratingCounts[4], ratingCounts[5]],
+                            backgroundColor: [
+                                'rgba(128, 0, 32, 0.8)',
+                                'rgba(165, 42, 42, 0.8)', 
+                                'rgba(205, 92, 92, 0.8)',
+                                'rgba(220, 20, 60, 0.8)',
+                                'rgba(178, 34, 34, 0.8)'
+                            ],
+                            borderColor: [
+                                'rgba(128, 0, 32, 1)',
+                                'rgba(165, 42, 42, 1)',
+                                'rgba(205, 92, 92, 1)', 
+                                'rgba(220, 20, 60, 1)',
+                                'rgba(178, 34, 34, 1)'
+                            ],
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        animation: false,
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Distribusi Rating Evaluasi',
+                                font: { size: 16, weight: 'bold' },
+                                color: 'rgb(128, 0, 32)'
+                            },
+                            legend: { display: false }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: { stepSize: 1 }
+                            }
+                        }
+                    }
+                });
+                
+                // Convert chart to image and add to PDF
+                setTimeout(() => {
+                    const chartImage = tempCanvas.toDataURL('image/png');
+                    
+                    if (yPosition > pageHeight - 80) {
+                        doc.addPage();
+                        yPosition = margin + 10;
+                    }
+                    
+                    doc.addImage(chartImage, 'PNG', margin, yPosition, 120, 60);
+                    yPosition += 70;
+                    
+                    // Destroy the chart
+                    ratingChart.destroy();
+                    
+                    // Create pie chart for respondent types
+                    const pieChart = new Chart(tempCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Internal', 'Eksternal'],
+                            datasets: [{
+                                data: [internal, external],
+                                backgroundColor: [
+                                    'rgba(128, 0, 32, 0.8)',
+                                    'rgba(205, 92, 92, 0.8)'
+                                ],
+                                borderColor: [
+                                    'rgba(128, 0, 32, 1)',
+                                    'rgba(205, 92, 92, 1)'
+                                ],
+                                borderWidth: 2
+                            }]
+                        },
+                        options: {
+                            responsive: false,
+                            animation: false,
+                            plugins: {
+                                title: {
+                                    display: true,
+                                    text: 'Komposisi Responden',
+                                    font: { size: 16, weight: 'bold' },
+                                    color: 'rgb(128, 0, 32)'
+                                },
+                                legend: {
+                                    position: 'bottom',
+                                    labels: { font: { size: 12 } }
+                                }
+                            }
+                        }
+                    });
+                    
+                    setTimeout(() => {
+                        const pieImage = tempCanvas.toDataURL('image/png');
+                        doc.addImage(pieImage, 'PNG', margin + 130, yPosition - 70, 60, 60);
+                        pieChart.destroy();
+                        
+                        // Continue with the rest of the PDF
+                        continueGeneratingPDF();
+                    }, 500);
+                }, 500);
+                
+            } catch (error) {
+                console.log('Chart generation failed, continuing without charts');
+                continueGeneratingPDF();
+            }
+            
+            function continueGeneratingPDF() {
+                // Key Findings
+                yPosition += 10;
+                yPosition = addSectionHeader('TEMUAN UTAMA', yPosition);
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+
+                const keyFindings = [
+                    `• Tingkat kepuasan keseluruhan: ${avgRating >= 4 ? 'Tinggi' : avgRating >= 3 ? 'Sedang' : 'Rendah'} (${avgRating.toFixed(1)}/5.0)`,
+                    `• Konsistensi penilaian: ${calculateStandardDeviation(ratings) < 1 ? 'Konsisten' : 'Bervariasi'} (SD: ${calculateStandardDeviation(ratings).toFixed(2)})`,
+                    `• Partisipasi responden: ${currentData.length >= 30 ? 'Memadai' : 'Perlu ditingkatkan'} (${currentData.length} responden)`,
+                    `• Keseimbangan perspektif: ${Math.abs(internal - external) <= 10 ? 'Seimbang' : 'Tidak seimbang'} (Internal: ${internal}, Eksternal: ${external})`,
+                    `• Area yang perlu perhatian: ${ratingCounts[1] + ratingCounts[2] > 0 ? `${ratingCounts[1] + ratingCounts[2]} responden memberikan rating rendah` : 'Tidak ada rating rendah'}`
+                ];
+
+                keyFindings.forEach(finding => {
+                    if (yPosition > pageHeight - 20) {
+                        doc.addPage();
+                        yPosition = margin + 10;
+                    }
+                    doc.text(finding, margin, yPosition);
+                    yPosition += 5;
+                });
+
+                // Recommendations
+                yPosition += 10;
+                yPosition = addSectionHeader('REKOMENDASI STRATEGIS', yPosition);
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+
+                const recommendations = [
+                    '1. JANGKA PENDEK (1-3 bulan):',
+                    '   • Tindak lanjut segera untuk rating di bawah 3.0 dengan action plan spesifik',
+                    '   • Perbaikan komunikasi dengan stakeholder melalui regular meeting',
+                    '   • Peningkatan responsivitas layanan dengan SLA yang jelas',
+                    '   • Quick wins implementation untuk boost morale dan kepercayaan',
+                    '',
+                    '2. JANGKA MENENGAH (3-6 bulan):',
+                    '   • Implementasi sistem monitoring kualitas real-time dengan dashboard',
+                    '   • Pelatihan komprehensif untuk seluruh staff building management',
+                    '   • Standardisasi prosedur operasional dengan dokumentasi lengkap',
+                    '   • Pembentukan tim quality assurance internal',
+                    '',
+                    '3. JANGKA PANJANG (6-12 bulan):',
+                    '   • Pengembangan sistem feedback berkelanjutan dengan teknologi',
+                    '   • Evaluasi dan penyesuaian struktur organisasi sesuai kebutuhan',
+                    '   • Implementasi teknologi IoT untuk efisiensi layanan gedung',
+                    '   • Sertifikasi internasional untuk building management excellence',
+                    '',
+                    '4. MONITORING DAN EVALUASI:',
+                    '   • Evaluasi bulanan dengan KPI yang terukur',
+                    '   • Survey kepuasan triwulanan untuk tracking progress',
+                    '   • Benchmarking dengan best practices industri',
+                    '   • Continuous improvement culture development'
+                ];
+
+                recommendations.forEach(rec => {
+                    if (yPosition > pageHeight - 25) {
+                        doc.addPage();
+                        yPosition = margin + 10;
+                    }
+                    doc.text(rec, margin, yPosition);
+                    yPosition += 4;
+                });
+
+                // Conclusion
+                yPosition += 10;
+                yPosition = addSectionHeader('KESIMPULAN', yPosition);
+                
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(9);
+                
+                const conclusion = [
+                    `Berdasarkan evaluasi komprehensif terhadap ${currentData.length} responden, building management OJK DIY`,
+                    `menunjukkan kinerja ${avgRating >= 4 ? 'excellent' : avgRating >= 3.5 ? 'baik' : avgRating >= 3 ? 'cukup' : 'yang perlu perbaikan'} dengan rating rata-rata ${avgRating.toFixed(2)}/5.0.`,
+                    ``,
+                    `Tingkat kepuasan ${((ratings.filter(r => r >= 4).length/ratings.length)*100).toFixed(1)}% responden menunjukkan ${ratings.filter(r => r >= 4).length/ratings.length >= 0.7 ? 'mayoritas puas' : 'masih ada ruang perbaikan'}.`,
+                    `Dengan implementasi rekomendasi yang sistematis dan terukur, diharapkan dapat mencapai`,
+                    `target excellence dalam pelayanan building management.`,
+                    ``,
+                    `Laporan ini menjadi baseline untuk continuous improvement dan monitoring berkala`,
+                    `guna memastikan kualitas pelayanan yang optimal bagi seluruh stakeholder OJK DIY.`
+                ];
+                
+                conclusion.forEach(line => {
+                    if (yPosition > pageHeight - 25) {
+                        doc.addPage();
+                        yPosition = margin + 10;
+                    }
+                    doc.text(line, margin, yPosition);
+                    yPosition += 4;
+                });
+
+                // Footer with maroon theme
+                const totalPages = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= totalPages; i++) {
+                    doc.setPage(i);
+                    
+                    // Footer background
+                    doc.setFillColor(...maroonDark);
+                    doc.rect(0, pageHeight - 15, pageWidth, 15, 'F');
+                    
+                    doc.setFontSize(8);
+                    doc.setTextColor(255, 255, 255);
+                    doc.text(`Halaman ${i} dari ${totalPages}`, pageWidth - 35, pageHeight - 5);
+                    doc.text(`© ${new Date().getFullYear()} OJK DIY - Building Management Evaluation Report`, margin, pageHeight - 5);
+                    doc.text(`Generated: ${new Date().toLocaleString('id-ID')}`, margin, pageHeight - 10);
+                }
+
+                // Save PDF with enhanced filename
+                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T')[0];
+                doc.save(`Laporan_Evaluasi_Building_Management_OJK_DIY_${timestamp}_Comprehensive.pdf`);
+            }
+        }
         }
 
         function calculateStandardDeviation(values) {
@@ -2032,5 +2368,5 @@
             }
         });
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979c6b7200753e50',t:'MTc1Njk3NzcxOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979c828af401f8f8',t:'MTc1Njk3ODY2NC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
