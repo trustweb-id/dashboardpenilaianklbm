@@ -9,43 +9,52 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Poppins', sans-serif; }
-        .chart-container { position: relative; height: 400px; }
-        .upload-area {
-            border: 2px dashed #e2e8f0;
-            transition: all 0.3s ease;
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(31, 38, 135, 0.37);
+        }
+        .upload-zone {
+            border: 3px dashed #e2e8f0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
         }
-        .upload-area:hover {
+        .upload-zone:hover {
             border-color: #3b82f6;
             background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
             transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.1);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.1);
         }
-        .upload-area.dragover {
-            border-color: #2563eb;
+        .upload-zone.dragover {
+            border-color: #1d4ed8;
             background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
             transform: translateY(-4px);
-            box-shadow: 0 15px 35px rgba(37, 99, 235, 0.2);
+            box-shadow: 0 25px 50px rgba(29, 78, 216, 0.2);
         }
-        .premium-card {
-            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.8) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             transition: all 0.3s ease;
         }
-        .premium-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
         }
-        .gradient-bg {
-            background: linear-gradient(135deg, #800020 0%, #a52a2a 100%);
+        .chart-container { 
+            position: relative; 
+            height: 350px; 
         }
-        .icon-gradient {
-            background: linear-gradient(135deg, #800020 0%, #a52a2a 100%);
+        .gradient-text {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -62,33 +71,40 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        .pulse-animation {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .5; }
+        }
     </style>
 </head>
-<body class="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 min-h-screen">
+<body class="min-h-screen">
     <!-- Header -->
-    <div class="gradient-bg shadow-2xl">
-        <div class="container mx-auto px-6 py-6">
-        <div class="flex flex-col md:flex-row items-center justify-between gap-6 md:gap-4">
-            <div class="flex items-center space-x-4 text-center md:text-left">
-                <div class="bg-white/20 backdrop-blur-sm rounded-xl p-3 hidden sm:block">
-                        <i class="fas fa-building text-2xl text-white"></i>
+    <div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-blue-600 shadow-2xl">
+        <div class="container mx-auto px-6 py-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-6">
+                    <div class="bg-white/20 backdrop-blur-sm rounded-2xl p-4">
+                        <i class="fas fa-building text-3xl text-white"></i>
                     </div>
                     <div>
-                    <h1 class="text-2xl sm:text-3xl font-bold text-white">Dashboard Evaluasi Building Management</h1>
-                    <p class="text-blue-100 mt-1 flex items-center justify-center md:justify-start">
-                            <i class="fas fa-university mr-2"></i>
+                        <h1 class="text-4xl font-bold text-white mb-2">Dashboard Evaluasi Building Management</h1>
+                        <p class="text-blue-100 text-lg flex items-center">
+                            <i class="fas fa-university mr-3"></i>
                             Otoritas Jasa Keuangan - Daerah Istimewa Yogyakarta
                         </p>
                     </div>
                 </div>
-            <div class="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
-                <button id="previewBtn" class="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 w-full sm:w-auto" disabled>
-                        <i class="fas fa-eye"></i>
-                        <span class="hidden sm:inline">Preview Laporan PDF</span>
+                <div class="flex space-x-4">
+                    <button id="exportBtn" class="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-3" disabled>
+                        <i class="fas fa-file-pdf text-xl"></i>
+                        <span>Download Laporan PDF</span>
                     </button>
-                <button id="refreshBtn" class="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 flex items-center justify-center space-x-2 w-full sm:w-auto">
-                        <i class="fas fa-sync-alt"></i>
-                        <span class="hidden sm:inline">Refresh Data</span>
+                    <button id="refreshBtn" class="bg-white/20 backdrop-blur-sm hover:bg-white/30 text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300 flex items-center space-x-3">
+                        <i class="fas fa-sync-alt text-xl"></i>
+                        <span>Refresh</span>
                     </button>
                 </div>
             </div>
@@ -97,156 +113,164 @@
 
     <div class="container mx-auto px-6 py-8">
         <!-- Upload Section -->
-        <div id="uploadSection" class="premium-card rounded-2xl p-8 mb-8">
-            <div class="flex items-center mb-6">
-                <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-3 mr-4">
-                    <i class="fas fa-cloud-upload-alt text-2xl text-white"></i>
+        <div id="uploadSection" class="glass-card rounded-3xl p-8 mb-8">
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-4">
+                    <i class="fas fa-cloud-upload-alt text-3xl text-white"></i>
                 </div>
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-800">Import Data Evaluasi</h2>
-                    <p class="text-gray-600">Upload file atau masukkan URL CSV untuk memulai analisis</p>
-                </div>
+                <h2 class="text-3xl font-bold gradient-text mb-2">Import Data Evaluasi</h2>
+                <p class="text-gray-600 text-lg">Upload file CSV/Excel atau masukkan URL untuk memulai analisis</p>
             </div>
 
-            <!-- URL Input Section -->
-            <div class="mb-6">
-                <label class="block text-sm font-semibold text-gray-700 mb-3">
+            <!-- URL Input -->
+            <div class="mb-8">
+                <label class="block text-lg font-semibold text-gray-700 mb-4">
                     <i class="fas fa-link mr-2 text-blue-500"></i>
-                    URL CSV (Google Sheets, dll)
+                    URL Data (Google Sheets, CSV, dll)
                 </label>
-                <div class="flex space-x-3">
+                <div class="flex space-x-4">
                     <input type="url" id="csvUrl" placeholder="https://docs.google.com/spreadsheets/..." 
-                           class="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300">
-                    <button id="loadUrlBtn" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-2">
+                           class="flex-1 px-6 py-4 border-2 border-gray-200 rounded-2xl focus:ring-4 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-300 text-lg">
+                    <button id="loadUrlBtn" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300 flex items-center space-x-3">
                         <i class="fas fa-download"></i>
-                        <span class="hidden sm:inline">Load Data</span>
+                        <span>Load Data</span>
                     </button>
                 </div>
             </div>
 
-            <div class="flex items-center mb-4">
+            <div class="flex items-center mb-6">
                 <div class="flex-1 h-px bg-gray-300"></div>
-                <span class="px-4 text-gray-500 font-medium">ATAU</span>
+                <span class="px-6 text-gray-500 font-semibold text-lg">ATAU</span>
                 <div class="flex-1 h-px bg-gray-300"></div>
             </div>
 
-            <!-- File Upload Section -->
-            <div class="upload-area rounded-2xl p-8 text-center" id="uploadArea">
+            <!-- File Upload -->
+            <div class="upload-zone rounded-3xl p-12 text-center cursor-pointer" id="uploadZone">
                 <div class="mb-6">
-                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-full p-4 w-20 h-20 mx-auto mb-4 flex items-center justify-center">
-                        <i class="fas fa-file-upload text-2xl text-white"></i>
+                    <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full mb-6">
+                        <i class="fas fa-file-upload text-3xl text-white"></i>
                     </div>
                 </div>
-                <p class="text-lg text-gray-700 mb-2 font-medium">Drag & drop file di sini atau</p>
-                <button id="selectFileBtn" class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8 py-3 rounded-xl font-medium transition-all duration-300 flex items-center space-x-2 mx-auto">
-                    <i class="fas fa-folder-open"></i>
-                    <span class="hidden sm:inline">Pilih File</span>
+                <h3 class="text-2xl font-bold text-gray-700 mb-3">Drag & Drop File di Sini</h3>
+                <p class="text-gray-600 mb-6 text-lg">atau klik untuk memilih file</p>
+                <button class="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-10 py-4 rounded-2xl font-semibold transition-all duration-300 flex items-center space-x-3 mx-auto">
+                    <i class="fas fa-folder-open text-xl"></i>
+                    <span>Pilih File</span>
                 </button>
                 <input type="file" id="fileInput" accept=".csv,.xlsx,.xls" class="hidden">
-                <p class="text-sm text-gray-500 mt-4 flex items-center justify-center">
+                <p class="text-gray-500 mt-6 flex items-center justify-center text-lg">
                     <i class="fas fa-info-circle mr-2"></i>
-                    Format yang didukung: CSV, XLSX, XLS
+                    Format: CSV, XLSX, XLS (Max: 10MB)
                 </p>
             </div>
 
-            <div id="fileInfo" class="mt-6 hidden">
-                <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4">
+            <!-- File Status -->
+            <div id="fileStatus" class="mt-8 hidden">
+                <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 rounded-2xl p-6">
                     <div class="flex items-center">
-                        <i class="fas fa-check-circle text-green-600 text-xl mr-3"></i>
+                        <i class="fas fa-check-circle text-green-600 text-2xl mr-4"></i>
                         <div>
-                            <p class="text-green-800 font-semibold">File berhasil dimuat: <span id="fileName"></span></p>
-                            <p class="text-green-600 text-sm">Total data: <span id="dataCount"></span> responden</p>
+                            <p class="text-green-800 font-bold text-lg">File berhasil dimuat: <span id="fileName"></span></p>
+                            <p class="text-green-600">Total data: <span id="dataCount"></span> responden</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div id="loadingInfo" class="mt-6 hidden">
-                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-xl p-4">
+            <div id="loadingStatus" class="mt-8 hidden">
+                <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-2xl p-6">
                     <div class="flex items-center">
-                        <div class="loading-spinner mr-3"></div>
+                        <div class="loading-spinner mr-4"></div>
                         <div>
-                            <p class="text-blue-800 font-semibold">Memuat data dari URL...</p>
-                            <p class="text-blue-600 text-sm">Mohon tunggu sebentar</p>
+                            <p class="text-blue-800 font-bold text-lg">Memproses data...</p>
+                            <p class="text-blue-600">Mohon tunggu sebentar</p>
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Quick Start -->
+            <div class="mt-8 text-center">
+                <button id="sampleBtn" class="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white px-8 py-4 rounded-2xl font-semibold transition-all duration-300 flex items-center space-x-3 mx-auto">
+                    <i class="fas fa-rocket"></i>
+                    <span>Coba dengan Data Contoh</span>
+                </button>
             </div>
         </div>
 
         <!-- Dashboard Content -->
-        <div id="dashboardContent" class="hidden">
+        <div id="dashboardContent" class="hidden space-y-8">
             <!-- Statistics Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                <div class="premium-card rounded-2xl p-6">
-                    <div class="flex flex-col sm:flex-row items-center text-center sm:text-left">
-                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl p-4 text-white flex-shrink-0">
-                            <i class="fas fa-users text-2xl"></i>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="stat-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Total Responden</p>
+                            <p class="text-4xl font-bold text-gray-900" id="totalResponden">0</p>
                         </div>
-                        <div class="mt-4 sm:mt-0 sm:ml-4">
-                            <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Total Responden</p>
-                            <p class="text-3xl font-bold text-gray-900" id="totalResponden">0</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="premium-card rounded-2xl p-6">
-                    <div class="flex flex-col sm:flex-row items-center text-center sm:text-left">
-                        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl p-4 text-white flex-shrink-0">
-                            <i class="fas fa-star text-2xl"></i>
-                        </div>
-                        <div class="mt-4 sm:mt-0 sm:ml-4">
-                            <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Rating Rata-rata</p>
-                            <p class="text-3xl font-bold text-gray-900" id="avgRating">0</p>
+                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-2xl p-4">
+                            <i class="fas fa-users text-2xl text-white"></i>
                         </div>
                     </div>
                 </div>
 
-                <div class="premium-card rounded-2xl p-6">
-                    <div class="flex flex-col sm:flex-row items-center text-center sm:text-left">
-                        <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl p-4 text-white flex-shrink-0">
-                            <i class="fas fa-user-tie text-2xl"></i>
+                <div class="stat-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Rating Rata-rata</p>
+                            <p class="text-4xl font-bold text-gray-900" id="avgRating">0</p>
                         </div>
-                        <div class="mt-4 sm:mt-0 sm:ml-4">
-                            <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Responden Internal</p>
-                            <p class="text-3xl font-bold text-gray-900" id="internalCount">0</p>
+                        <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-4">
+                            <i class="fas fa-star text-2xl text-white"></i>
                         </div>
                     </div>
                 </div>
 
-                <div class="premium-card rounded-2xl p-6">
-                    <div class="flex flex-col sm:flex-row items-center text-center sm:text-left">
-                        <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-xl p-4 text-white flex-shrink-0">
-                            <i class="fas fa-user-friends text-2xl"></i>
+                <div class="stat-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Responden Internal</p>
+                            <p class="text-4xl font-bold text-gray-900" id="internalCount">0</p>
                         </div>
-                        <div class="mt-4 sm:mt-0 sm:ml-4">
-                            <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide">Responden Eksternal</p>
-                            <p class="text-3xl font-bold text-gray-900" id="externalCount">0</p>
+                        <div class="bg-gradient-to-r from-purple-500 to-purple-600 rounded-2xl p-4">
+                            <i class="fas fa-user-tie text-2xl text-white"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stat-card rounded-2xl p-6">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-gray-600 uppercase tracking-wide mb-2">Responden Eksternal</p>
+                            <p class="text-4xl font-bold text-gray-900" id="externalCount">0</p>
+                        </div>
+                        <div class="bg-gradient-to-r from-orange-500 to-orange-600 rounded-2xl p-4">
+                            <i class="fas fa-user-friends text-2xl text-white"></i>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Charts Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <div class="premium-card rounded-2xl p-6">
+            <!-- Charts -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="glass-card rounded-3xl p-8">
                     <div class="flex items-center mb-6">
-                        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-3 mr-4">
+                        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-2xl p-3 mr-4">
                             <i class="fas fa-chart-bar text-xl text-white"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-800">Distribusi Rating</h3>
+                        <h3 class="text-2xl font-bold text-gray-800">Distribusi Rating</h3>
                     </div>
                     <div class="chart-container">
                         <canvas id="ratingChart"></canvas>
                     </div>
                 </div>
 
-                <div class="premium-card rounded-2xl p-6">
+                <div class="glass-card rounded-3xl p-8">
                     <div class="flex items-center mb-6">
-                        <div class="bg-gradient-to-r from-pink-500 to-rose-600 rounded-xl p-3 mr-4">
+                        <div class="bg-gradient-to-r from-pink-500 to-rose-600 rounded-2xl p-3 mr-4">
                             <i class="fas fa-chart-pie text-xl text-white"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-800">Perbandingan Responden</h3>
+                        <h3 class="text-2xl font-bold text-gray-800">Komposisi Responden</h3>
                     </div>
                     <div class="chart-container">
                         <canvas id="typeChart"></canvas>
@@ -254,150 +278,83 @@
                 </div>
             </div>
 
-            <!-- Rankings Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <div class="premium-card rounded-2xl p-6">
+            <!-- Division Rankings -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="glass-card rounded-3xl p-8">
                     <div class="flex items-center mb-6">
-                        <div class="bg-gradient-to-r from-yellow-500 to-orange-600 rounded-xl p-3 mr-4">
-                            <i class="fas fa-trophy text-xl text-white"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800">Ranking Responden Internal</h3>
-                    </div>
-                    <div id="internalRanking" class="space-y-3"></div>
-                </div>
-
-                <div class="premium-card rounded-2xl p-6">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-xl p-3 mr-4">
-                            <i class="fas fa-medal text-xl text-white"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800">Ranking Responden Eksternal</h3>
-                    </div>
-                    <div id="externalRanking" class="space-y-3"></div>
-                </div>
-            </div>
-
-            <!-- Division Rankings Section -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <div class="premium-card rounded-2xl p-6">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-gradient-to-r from-indigo-500 to-purple-600 rounded-xl p-3 mr-4">
-                            <i class="fas fa-sitemap text-xl text-white"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800">Ranking Divisi (Penilaian Internal)</h3>
-                    </div>
-                    <div id="divisionInternalRanking" class="space-y-3"></div>
-                </div>
-
-                <div class="premium-card rounded-2xl p-6">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-gradient-to-r from-teal-500 to-cyan-600 rounded-xl p-3 mr-4">
+                        <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-3 mr-4">
                             <i class="fas fa-building text-xl text-white"></i>
                         </div>
-                        <h3 class="text-xl font-bold text-gray-800">Ranking Divisi (Penilaian Eksternal)</h3>
+                        <h3 class="text-2xl font-bold text-gray-800">Ranking Divisi</h3>
                     </div>
-                    <div id="divisionExternalRanking" class="space-y-3"></div>
+                    <div id="divisionRanking" class="space-y-4"></div>
+                </div>
+
+                <div class="glass-card rounded-3xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-gradient-to-r from-yellow-500 to-orange-600 rounded-2xl p-3 mr-4">
+                            <i class="fas fa-clock text-xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800">Responden Tercepat</h3>
+                    </div>
+                    <div id="fastestResponders" class="space-y-4"></div>
                 </div>
             </div>
 
-            <!-- Fastest Responders Section -->
-            <div class="premium-card rounded-2xl p-6 mb-8">
-                <div class="flex items-center mb-6">
-                    <div class="bg-gradient-to-r from-green-500 to-emerald-600 rounded-xl p-3 mr-4">
-                        <i class="fas fa-stopwatch text-xl text-white"></i>
+            <!-- Rankings -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="glass-card rounded-3xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-gradient-to-r from-yellow-500 to-orange-600 rounded-2xl p-3 mr-4">
+                            <i class="fas fa-trophy text-xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800">Top Responden Internal</h3>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800">Responden Tercepat (Internal)</h3>
+                    <div id="internalRanking" class="space-y-4"></div>
                 </div>
-                <div id="fastestResponders" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+
+                <div class="glass-card rounded-3xl p-8">
+                    <div class="flex items-center mb-6">
+                        <div class="bg-gradient-to-r from-emerald-500 to-teal-600 rounded-2xl p-3 mr-4">
+                            <i class="fas fa-medal text-xl text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-800">Top Responden Eksternal</h3>
+                    </div>
+                    <div id="externalRanking" class="space-y-4"></div>
+                </div>
             </div>
 
-            <!-- Analysis Section -->
-            <div class="premium-card rounded-2xl p-6 mb-8">
+            <!-- Low Performance Analysis -->
+            <div class="glass-card rounded-3xl p-8">
                 <div class="flex items-center mb-6">
-                    <div class="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-xl p-3 mr-4">
+                    <div class="bg-gradient-to-r from-red-500 to-pink-600 rounded-2xl p-3 mr-4">
+                        <i class="fas fa-exclamation-triangle text-xl text-white"></i>
+                    </div>
+                    <h3 class="text-2xl font-bold text-gray-800">Evaluasi Divisi dengan Nilai Terendah</h3>
+                </div>
+                <div id="lowPerformanceAnalysis" class="space-y-4"></div>
+            </div>
+
+            <!-- Analysis -->
+            <div class="glass-card rounded-3xl p-8">
+                <div class="flex items-center mb-6">
+                    <div class="bg-gradient-to-r from-cyan-500 to-blue-600 rounded-2xl p-3 mr-4">
                         <i class="fas fa-chart-line text-xl text-white"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800">Analisis Evaluasi</h3>
+                    <h3 class="text-2xl font-bold text-gray-800">Analisis & Rekomendasi</h3>
                 </div>
                 <div id="analysisContent" class="prose max-w-none"></div>
             </div>
 
-            <!-- Lowest Scoring Teams -->
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-                <div class="premium-card rounded-2xl p-6">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-gradient-to-r from-red-500 to-pink-600 rounded-xl p-3 mr-4">
-                            <i class="fas fa-exclamation-triangle text-xl text-white"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800">Tim/Divisi Nilai Terendah</h3>
-                    </div>
-                    <div id="lowestScoringTeams" class="space-y-4"></div>
-                </div>
-
-                <div class="premium-card rounded-2xl p-6">
-                    <div class="flex items-center mb-6">
-                        <div class="bg-gradient-to-r from-orange-500 to-red-600 rounded-xl p-3 mr-4">
-                            <i class="fas fa-comments text-xl text-white"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-gray-800">Kritik & Saran Responden</h3>
-                    </div>
-                    <div id="criticismSuggestions" class="space-y-4"></div>
-                </div>
-            </div>
-
-            <!-- Improvement Points -->
-            <div class="premium-card rounded-2xl p-6">
+            <!-- Feedback Section -->
+            <div class="glass-card rounded-3xl p-8">
                 <div class="flex items-center mb-6">
-                    <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-xl p-3 mr-4">
-                        <i class="fas fa-bullseye text-xl text-white"></i>
+                    <div class="bg-gradient-to-r from-purple-500 to-indigo-600 rounded-2xl p-3 mr-4">
+                        <i class="fas fa-comments text-xl text-white"></i>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800">Poin yang Perlu Diperbaiki</h3>
+                    <h3 class="text-2xl font-bold text-gray-800">Kritik & Saran Responden</h3>
                 </div>
-                <div id="improvementPoints" class="space-y-3"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- PDF Preview Modal -->
-    <div id="pdfPreviewModal" class="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full max-h-[90vh] flex flex-col">
-            <div class="flex items-center justify-between p-6 border-b border-gray-200">
-                <div class="flex items-center space-x-3">
-                    <div class="bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl p-2">
-                        <i class="fas fa-file-pdf text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-xl font-bold text-gray-800">Preview Laporan PDF</h3>
-                        <p class="text-gray-600 text-sm">Evaluasi Building Management OJK DIY</p>
-                    </div>
-                </div>
-                <button id="closePdfModal" class="text-gray-400 hover:text-gray-600 transition-colors">
-                    <i class="fas fa-times text-2xl"></i>
-                </button>
-            </div>
-            
-            <div class="flex-1 overflow-hidden">
-                <div id="pdfPreviewContent" class="h-full overflow-y-auto p-6 bg-gray-50">
-                    <div class="bg-white shadow-lg rounded-lg p-8 max-w-3xl mx-auto" style="min-height: 800px;">
-                        <div id="pdfPreviewText" class="prose max-w-none"></div>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="flex items-center justify-between p-6 border-t border-gray-200 bg-gray-50">
-                <div class="flex items-center space-x-2 text-sm text-gray-600">
-                    <i class="fas fa-info-circle"></i>
-                    <span>Preview laporan sebelum download</span>
-                </div>
-                <div class="flex space-x-3">
-                    <button id="cancelPreview" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors">
-                        Batal
-                    </button>
-                    <button id="downloadFromPreview" class="px-6 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all flex items-center space-x-2">
-                        <i class="fas fa-download"></i>
-                        <span>Download PDF</span>
-                    </button>
-                </div>
+                <div id="feedbackContent" class="space-y-4"></div>
             </div>
         </div>
     </div>
@@ -406,278 +363,211 @@
         let currentData = [];
         let charts = {};
 
-        // File upload handling
+        // Elements
         const fileInput = document.getElementById('fileInput');
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInfo = document.getElementById('fileInfo');
-        const loadingInfo = document.getElementById('loadingInfo');
-        const dashboardContent = document.getElementById('dashboardContent');
+        const uploadZone = document.getElementById('uploadZone');
         const csvUrlInput = document.getElementById('csvUrl');
         const loadUrlBtn = document.getElementById('loadUrlBtn');
+        const sampleBtn = document.getElementById('sampleBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const fileStatus = document.getElementById('fileStatus');
+        const loadingStatus = document.getElementById('loadingStatus');
+        const dashboardContent = document.getElementById('dashboardContent');
 
-        // Make the "Pilih File" button trigger the file input
-        const selectFileBtn = document.getElementById('selectFileBtn');
-        if (selectFileBtn) {
-            selectFileBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                fileInput.click();
-            });
-        }
-
-        // URL CSV loading
+        // Event Listeners
+        uploadZone.addEventListener('click', () => fileInput.click());
+        uploadZone.addEventListener('dragover', handleDragOver);
+        uploadZone.addEventListener('dragleave', handleDragLeave);
+        uploadZone.addEventListener('drop', handleDrop);
+        fileInput.addEventListener('change', handleFileSelect);
         loadUrlBtn.addEventListener('click', loadFromUrl);
-        csvUrlInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                loadFromUrl();
-            }
-        });
+        sampleBtn.addEventListener('click', loadSampleData);
+        exportBtn.addEventListener('click', exportToPDF);
+        refreshBtn.addEventListener('click', refreshDashboard);
 
-        async function loadFromUrl() {
-            const url = csvUrlInput.value.trim();
-            if (!url) {
-                alert('Silakan masukkan URL CSV terlebih dahulu.');
-                return;
-            }
-
-            // Convert Google Sheets URL to CSV export format
-            let csvUrl = url;
-            if (url.includes('docs.google.com/spreadsheets')) {
-                const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
-                if (match) {
-                    // Use the direct CSV export link from "Publish to web"
-                    csvUrl = `https://docs.google.com/spreadsheets/d/${match[1]}/export?format=csv`;
-                    console.log('Converted Google Sheets URL to:', csvUrl);
-                }
-            }
-
-            loadingInfo.classList.remove('hidden');
-            fileInfo.classList.add('hidden');
-            dashboardContent.classList.add('hidden');
-
-            try {
-                const response = await fetch(csvUrl);
-                if (!response.ok) {
-                    throw new Error(`Gagal mengambil data. Status: ${response.status} ${response.statusText}`);
-                }
-                
-                const csvText = await response.text();
-                
-                if (csvText) {
-                    parseCSV(csvText);
-                    document.getElementById('fileName').textContent = 'Data dari URL';
-                    document.getElementById('dataCount').textContent = currentData.length;
-                    fileInfo.classList.remove('hidden');
-                } else {
-                    throw new Error('Data CSV dari URL kosong.');
-                }
-
-            } catch (error) {
-                console.error('Error loading CSV from URL:', error);
-                const isCorsError = error instanceof TypeError;
-
-                let friendlyMessage = 'Gagal memuat data dari URL.\n\n';
-                if (isCorsError) {
-                    friendlyMessage += 'Ini kemungkinan besar karena masalah CORS (Cross-Origin Resource Sharing).\n\n';
-                    friendlyMessage += 'SOLUSI UNTUK GOOGLE SHEETS:\n';
-                    friendlyMessage += '1. Buka Google Sheet Anda.\n';
-                    friendlyMessage += '2. Klik "File" > "Share" > "Publish to web".\n';
-                    friendlyMessage += '3. Di bawah "Link", pilih sheet yang benar, lalu pilih "Comma-separated values (.csv)".\n';
-                    friendlyMessage += '4. Klik "Publish" dan salin link yang diberikan.\n';
-                    friendlyMessage += '5. Gunakan link yang baru disalin tersebut di sini.\n\n';
-                    friendlyMessage += 'Untuk URL lain, pastikan server mengizinkan akses dari domain lain (CORS header: Access-Control-Allow-Origin).';
-                } else {
-                    friendlyMessage += `Detail Error: ${error.message}\n\n`;
-                    friendlyMessage += 'Pastikan URL yang Anda masukkan benar dan dapat diakses secara publik.';
-                }
-
-                alert(friendlyMessage);
-            } finally {
-                loadingInfo.classList.add('hidden');
-            }
+        // Drag & Drop Handlers
+        function handleDragOver(e) {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
         }
 
-        // Drag and drop handlers
-        uploadArea.addEventListener('dragover', (e) => {
+        function handleDragLeave(e) {
             e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
+            uploadZone.classList.remove('dragover');
+        }
 
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
+        function handleDrop(e) {
             e.preventDefault();
-            uploadArea.classList.remove('dragover');
+            uploadZone.classList.remove('dragover');
             const files = e.dataTransfer.files;
             if (files.length > 0) {
-                handleFile(files[0]);
+                processFile(files[0]);
             }
-        });
+        }
 
-        fileInput.addEventListener('change', (e) => {
-            console.log('File input changed:', e.target.files);
-            if (e.target.files && e.target.files.length > 0) {
-                const file = e.target.files[0];
-                console.log('Selected file:', file.name, file.type, file.size);
-                handleFile(file);
-            } else {
-                console.log('No file selected');
+        function handleFileSelect(e) {
+            if (e.target.files.length > 0) {
+                processFile(e.target.files[0]);
             }
-        });
+        }
 
-        function handleFile(file) {
-            console.log('=== HANDLING FILE ===');
-            console.log('File name:', file.name);
-            console.log('File type:', file.type);
-            console.log('File size:', file.size, 'bytes');
+        // File Processing
+        function processFile(file) {
+            console.log('Processing file:', file.name, file.type, file.size);
             
-            const fileName = file.name;
-            const fileExtension = fileName.split('.').pop().toLowerCase();
-            console.log('File extension:', fileExtension);
-
-            if (!['csv', 'xlsx', 'xls'].includes(fileExtension)) {
-                alert('Format file tidak didukung. Gunakan CSV, XLSX, atau XLS.');
+            if (file.size > 10 * 1024 * 1024) {
+                alert('File terlalu besar! Maksimal 10MB.');
                 return;
             }
 
-            // Show loading state
-            loadingInfo.classList.remove('hidden');
-            fileInfo.classList.add('hidden');
-            document.getElementById('fileName').textContent = fileName;
-            console.log('Loading state shown');
+            const extension = file.name.split('.').pop().toLowerCase();
+            if (!['csv', 'xlsx', 'xls'].includes(extension)) {
+                alert('Format file tidak didukung! Gunakan CSV, XLSX, atau XLS.');
+                return;
+            }
 
-            if (fileExtension === 'csv') {
-                console.log('Processing CSV file...');
+            showLoading();
+
+            if (extension === 'csv') {
                 const reader = new FileReader();
-                
                 reader.onload = (e) => {
-                    console.log('CSV FileReader onload triggered');
                     try {
-                        const csv = e.target.result;
-                        console.log('CSV content length:', csv.length);
-                        console.log('CSV preview (first 200 chars):', csv.substring(0, 200));
-                        
-                        parseCSV(csv);
-                        loadingInfo.classList.add('hidden');
-                        
-                        // Show success info
-                        document.getElementById('fileName').textContent = fileName;
-                        document.getElementById('dataCount').textContent = currentData.length;
-                        fileInfo.classList.remove('hidden');
-                        console.log('CSV processing completed successfully');
-                        
+                        parseCSV(e.target.result);
+                        showSuccess(file.name);
                     } catch (error) {
-                        console.error('Error parsing CSV:', error);
-                        loadingInfo.classList.add('hidden');
-                        alert('Error parsing CSV file: ' + error.message);
+                        showError('Error parsing CSV: ' + error.message);
                     }
                 };
-                
-                reader.onerror = (e) => {
-                    console.error('FileReader error:', e);
-                    loadingInfo.classList.add('hidden');
-                    alert('Error reading CSV file: ' + e.target.error);
-                };
-                
-                reader.onprogress = (e) => {
-                    console.log('Reading progress:', e.loaded, '/', e.total);
-                };
-                
-                console.log('Starting to read CSV file...');
                 reader.readAsText(file, 'UTF-8');
-                
             } else {
-                console.log('Processing Excel file...');
                 const reader = new FileReader();
-                
                 reader.onload = (e) => {
-                    console.log('Excel FileReader onload triggered');
                     try {
-                        const data = new Uint8Array(e.target.result);
-                        console.log('Excel data length:', data.length);
-                        
-                        const workbook = XLSX.read(data, { type: 'array' });
-                        console.log('Workbook sheets:', workbook.SheetNames);
-                        
+                        const workbook = XLSX.read(e.target.result, { type: 'array' });
                         const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
                         const csv = XLSX.utils.sheet_to_csv(firstSheet);
-                        console.log('Converted to CSV, length:', csv.length);
-                        
                         parseCSV(csv);
-                        loadingInfo.classList.add('hidden');
-                        
-                        // Show success info
-                        document.getElementById('fileName').textContent = fileName;
-                        document.getElementById('dataCount').textContent = currentData.length;
-                        fileInfo.classList.remove('hidden');
-                        console.log('Excel processing completed successfully');
-                        
+                        showSuccess(file.name);
                     } catch (error) {
-                        console.error('Error parsing Excel:', error);
-                        loadingInfo.classList.add('hidden');
-                        alert('Error parsing Excel file: ' + error.message);
+                        showError('Error parsing Excel: ' + error.message);
                     }
                 };
-                
-                reader.onerror = (e) => {
-                    console.error('FileReader error:', e);
-                    loadingInfo.classList.add('hidden');
-                    alert('Error reading Excel file: ' + e.target.error);
-                };
-                
-                reader.onprogress = (e) => {
-                    console.log('Reading progress:', e.loaded, '/', e.total);
-                };
-                
-                console.log('Starting to read Excel file...');
                 reader.readAsArrayBuffer(file);
             }
         }
 
-        function parseCSV(csv) {
-            console.log('Parsing CSV, length:', csv.length);
-            console.log('First 200 chars:', csv.substring(0, 200));
-            
-            if (!csv || csv.trim().length === 0) {
-                throw new Error('File CSV kosong atau tidak valid');
+        // URL Loading
+        async function loadFromUrl() {
+            const url = csvUrlInput.value.trim();
+            if (!url) {
+                alert('Masukkan URL terlebih dahulu!');
+                return;
             }
+
+            showLoading();
+
+            try {
+                let csvUrl = url;
+                
+                // Convert Google Sheets URL
+                if (url.includes('docs.google.com/spreadsheets')) {
+                    const match = url.match(/\/spreadsheets\/d\/([a-zA-Z0-9-_]+)/);
+                    if (match) {
+                        csvUrl = `https://docs.google.com/spreadsheets/d/${match[1]}/export?format=csv`;
+                    }
+                }
+
+                // Try multiple CORS proxies
+                const proxies = [
+                    'https://api.allorigins.win/raw?url=',
+                    'https://cors-anywhere.herokuapp.com/',
+                    ''
+                ];
+
+                let success = false;
+                for (const proxy of proxies) {
+                    try {
+                        const response = await fetch(proxy + encodeURIComponent(csvUrl));
+                        if (response.ok) {
+                            const csvText = await response.text();
+                            parseCSV(csvText);
+                            showSuccess('Data dari URL');
+                            success = true;
+                            break;
+                        }
+                    } catch (error) {
+                        continue;
+                    }
+                }
+
+                if (!success) {
+                    throw new Error('Tidak dapat memuat data dari URL');
+                }
+
+            } catch (error) {
+                showError('Gagal memuat data: ' + error.message);
+            }
+        }
+
+        // Sample Data
+        function loadSampleData() {
+            const sampleCSV = `Timestamp,Nama,Division,Instansi,Type,Rating,Reason,Feedback Umum
+2024-01-15 08:30:00,Ahmad Wijaya,IT,OJK DIY,Internal,4.5,"Pelayanan sangat baik dan responsif","Terus tingkatkan kualitas pelayanan teknologi"
+2024-01-15 08:45:00,Siti Nurhaliza,Keuangan,OJK DIY,Internal,4.2,"Staff ramah dan profesional","Perlu peningkatan di area kebersihan toilet"
+2024-01-15 09:00:00,Budi Santoso,Operasional,OJK DIY,Internal,3.8,"Cukup baik tapi masih ada yang perlu diperbaiki","Sistem AC di lantai 2 perlu diperbaiki segera"
+2024-01-15 09:15:00,Dr. Maya Sari,Akademisi,Universitas Gadjah Mada,External,4.0,"Fasilitas lengkap dan memadai","Area parkir perlu diperluas untuk tamu"
+2024-01-15 09:30:00,Eko Prasetyo,Pengawasan,OJK DIY,Internal,3.5,"Pelayanan standar","Perlu pelatihan customer service yang lebih baik"
+2024-01-15 09:45:00,Lisa Permata,Hukum,OJK DIY,Internal,4.8,"Excellent service, very satisfied","Keep up the good work, semua sudah baik"
+2024-01-15 10:00:00,Rudi Hartono,Konsultan,PT Mandiri Konsultan,External,3.2,"Kurang responsif dalam menangani keluhan","Perlu sistem complaint yang lebih efektif"
+2024-01-15 10:15:00,Indira Sari,Komunikasi,OJK DIY,Internal,4.1,"Baik secara keseluruhan","Tingkatkan koordinasi antar divisi"
+2024-01-15 10:30:00,Prof. Bambang,Peneliti,LIPI,External,4.3,"Fasilitas penelitian sangat mendukung","Akses internet perlu dipercepat di ruang meeting"
+2024-01-15 10:45:00,Dewi Lestari,SDM,OJK DIY,Internal,2.8,"Banyak hal yang perlu diperbaiki","Sistem booking ruangan tidak user-friendly"
+2024-01-15 11:00:00,Agus Setiawan,IT,OJK DIY,Internal,4.6,"Infrastruktur IT sangat baik","Maintenance rutin server perlu dijadwalkan"
+2024-01-15 11:15:00,Maria Santos,Auditor,KAP Santos & Partners,External,3.9,"Cukup memuaskan","Ruang meeting perlu sound system yang lebih baik"
+2024-01-15 11:30:00,Hendra Kusuma,Pemasaran,OJK DIY,Internal,3.1,"Masih banyak kekurangan","Staff security perlu training komunikasi"
+2024-01-15 11:45:00,Dr. Ratna,Konsultan,Konsultan Independen,External,4.4,"Pelayanan profesional","Sistem keamanan sudah sangat baik"
+2024-01-15 12:00:00,Yudi Pratama,Administrasi,OJK DIY,Internal,3.7,"Cukup baik tapi bisa lebih baik","Proses administrasi perlu disederhanakan"
+2024-01-15 12:15:00,Rina Sari,Keuangan,OJK DIY,Internal,2.5,"Pelayanan kurang memuaskan","Lift sering bermasalah, perlu perbaikan"
+2024-01-15 12:30:00,Doni Prasetyo,Operasional,OJK DIY,Internal,3.0,"Standar saja","Kantin perlu variasi menu yang lebih banyak"
+2024-01-15 12:45:00,Fitri Handayani,SDM,OJK DIY,Internal,2.9,"Masih perlu banyak perbaikan","Toilet wanita sering kotor dan tidak terawat"
+2024-01-15 13:00:00,Joko Widodo,Pengawasan,OJK DIY,Internal,4.0,"Cukup baik","Parkir motor perlu area yang lebih luas"
+2024-01-15 13:15:00,Sari Dewi,Komunikasi,OJK DIY,Internal,3.6,"Lumayan baik","Sinyal wifi di beberapa area masih lemah"`;
             
-            const lines = csv.split(/\r?\n/); // Handle both \n and \r\n
-            console.log('Total lines:', lines.length);
-            
+            try {
+                parseCSV(sampleCSV);
+                showSuccess('Data Contoh');
+            } catch (error) {
+                showError('Error loading sample data: ' + error.message);
+            }
+        }
+
+        // CSV Parser
+        function parseCSV(csv) {
+            const lines = csv.split(/\r?\n/).filter(line => line.trim());
             if (lines.length < 2) {
                 throw new Error('File CSV harus memiliki minimal header dan 1 baris data');
             }
-            
-            const headers = parseCSVLine(lines[0]).map(h => h.trim().replace(/"/g, ''));
-            console.log('Headers found:', headers);
-            
+
+            const headers = parseCSVLine(lines[0]);
             currentData = [];
+
             for (let i = 1; i < lines.length; i++) {
-                const line = lines[i].trim();
-                if (line) {
-                    const values = parseCSVLine(line);
-                    if (values.length > 0) {
-                        const row = {};
-                        headers.forEach((header, index) => {
-                            row[header] = values[index] ? values[index].trim().replace(/"/g, '') : '';
-                        });
-                        currentData.push(row);
-                    }
+                const values = parseCSVLine(lines[i]);
+                if (values.length > 0) {
+                    const row = {};
+                    headers.forEach((header, index) => {
+                        row[header.trim()] = values[index] ? values[index].trim() : '';
+                    });
+                    currentData.push(row);
                 }
             }
 
-            console.log('Parsed data rows:', currentData.length);
-            console.log('Sample row:', currentData[0]);
-
-            if (currentData.length > 0) {
-                dashboardContent.classList.remove('hidden');
-                document.getElementById('previewBtn').disabled = false;
-                updateDashboard();
-            } else {
-                throw new Error('Tidak ada data yang valid ditemukan dalam file. Pastikan file memiliki header dan data yang benar.');
+            if (currentData.length === 0) {
+                throw new Error('Tidak ada data valid ditemukan');
             }
+
+            updateDashboard();
         }
 
         function parseCSVLine(line) {
@@ -690,24 +580,46 @@
                 if (char === '"') {
                     inQuotes = !inQuotes;
                 } else if (char === ',' && !inQuotes) {
-                    result.push(current);
+                    result.push(current.replace(/^"|"$/g, ''));
                     current = '';
                 } else {
                     current += char;
                 }
             }
-            result.push(current);
+            result.push(current.replace(/^"|"$/g, ''));
             return result;
         }
 
+        // UI State Management
+        function showLoading() {
+            loadingStatus.classList.remove('hidden');
+            fileStatus.classList.add('hidden');
+        }
+
+        function showSuccess(fileName) {
+            loadingStatus.classList.add('hidden');
+            document.getElementById('fileName').textContent = fileName;
+            document.getElementById('dataCount').textContent = currentData.length;
+            fileStatus.classList.remove('hidden');
+            dashboardContent.classList.remove('hidden');
+            exportBtn.disabled = false;
+        }
+
+        function showError(message) {
+            loadingStatus.classList.add('hidden');
+            alert(message);
+        }
+
+        // Dashboard Updates
         function updateDashboard() {
             updateStatistics();
             updateCharts();
+            updateDivisionRanking();
+            updateFastestResponders();
             updateRankings();
-            updateLowestScoringTeams();
-            updateCriticismSuggestions();
+            updateLowPerformanceAnalysis();
             updateAnalysis();
-            updateImprovementPoints();
+            updateFeedback();
         }
 
         function updateStatistics() {
@@ -741,21 +653,21 @@
                         label: 'Jumlah Responden',
                         data: [ratingCounts[1], ratingCounts[2], ratingCounts[3], ratingCounts[4], ratingCounts[5]],
                         backgroundColor: [
-                            'rgba(128, 0, 32, 0.8)',
-                            'rgba(165, 42, 42, 0.8)',
-                            'rgba(205, 92, 92, 0.8)',
-                            'rgba(220, 20, 60, 0.8)',
-                            'rgba(178, 34, 34, 0.8)'
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(59, 130, 246, 0.8)',
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(34, 197, 94, 0.8)'
                         ],
                         borderColor: [
-                            'rgba(128, 0, 32, 1)',
-                            'rgba(165, 42, 42, 1)',
-                            'rgba(205, 92, 92, 1)',
-                            'rgba(220, 20, 60, 1)',
-                            'rgba(178, 34, 34, 1)'
+                            'rgba(239, 68, 68, 1)',
+                            'rgba(245, 158, 11, 1)',
+                            'rgba(59, 130, 246, 1)',
+                            'rgba(16, 185, 129, 1)',
+                            'rgba(34, 197, 94, 1)'
                         ],
                         borderWidth: 2,
-                        borderRadius: 8,
+                        borderRadius: 12,
                         borderSkipped: false,
                     }]
                 },
@@ -763,8 +675,14 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     plugins: {
-                        legend: {
-                            display: false
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: 'white',
+                            bodyColor: 'white',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            borderWidth: 1,
+                            cornerRadius: 8
                         }
                     },
                     scales: {
@@ -772,23 +690,13 @@
                             beginAtZero: true,
                             ticks: {
                                 stepSize: 1,
-                                font: {
-                                    family: 'Poppins'
-                                }
+                                font: { family: 'Inter', size: 12 }
                             },
-                            grid: {
-                                color: 'rgba(148, 163, 184, 0.1)'
-                            }
+                            grid: { color: 'rgba(148, 163, 184, 0.1)' }
                         },
                         x: {
-                            ticks: {
-                                font: {
-                                    family: 'Poppins'
-                                }
-                            },
-                            grid: {
-                                display: false
-                            }
+                            ticks: { font: { family: 'Inter', size: 12 } },
+                            grid: { display: false }
                         }
                     }
                 }
@@ -807,15 +715,15 @@
                     datasets: [{
                         data: [internal, external],
                         backgroundColor: [
-                            'rgba(128, 0, 32, 0.8)',
-                            'rgba(205, 92, 92, 0.8)'
+                            'rgba(99, 102, 241, 0.8)',
+                            'rgba(236, 72, 153, 0.8)'
                         ],
                         borderColor: [
-                            'rgba(128, 0, 32, 1)',
-                            'rgba(205, 92, 92, 1)'
+                            'rgba(99, 102, 241, 1)',
+                            'rgba(236, 72, 153, 1)'
                         ],
                         borderWidth: 3,
-                        hoverOffset: 4
+                        hoverOffset: 8
                     }]
                 },
                 options: {
@@ -825,17 +733,151 @@
                         legend: {
                             position: 'bottom',
                             labels: {
-                                font: {
-                                    family: 'Poppins',
-                                    size: 14
-                                },
+                                font: { family: 'Inter', size: 14 },
                                 padding: 20,
                                 usePointStyle: true,
                                 pointStyle: 'circle'
                             }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                            titleColor: 'white',
+                            bodyColor: 'white',
+                            borderColor: 'rgba(255, 255, 255, 0.2)',
+                            borderWidth: 1,
+                            cornerRadius: 8
                         }
                     }
                 }
+            });
+        }
+
+        function updateDivisionRanking() {
+            const divisionData = {};
+            
+            currentData.forEach(d => {
+                if (d.Division && d.Type && d.Type.toLowerCase().includes('internal')) {
+                    const division = d.Division.trim();
+                    if (!divisionData[division]) {
+                        divisionData[division] = {
+                            name: division,
+                            ratings: [],
+                            internal: 0,
+                            external: 0
+                        };
+                    }
+                    const rating = parseFloat(d.Rating);
+                    if (!isNaN(rating)) {
+                        divisionData[division].ratings.push(rating);
+                        divisionData[division].internal++;
+                    }
+                }
+            });
+
+            const divisionRanking = Object.values(divisionData)
+                .map(div => ({
+                    ...div,
+                    avgRating: div.ratings.length > 0 ? 
+                        div.ratings.reduce((a, b) => a + b, 0) / div.ratings.length : 0,
+                    totalResponses: div.ratings.length
+                }))
+                .sort((a, b) => b.avgRating - a.avgRating);
+
+            const container = document.getElementById('divisionRanking');
+            container.innerHTML = '';
+
+            if (divisionRanking.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-inbox text-5xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 text-lg">Tidak ada data divisi untuk ditampilkan</p>
+                    </div>
+                `;
+                return;
+            }
+
+            divisionRanking.forEach((division, index) => {
+                const rankClass = index === 0 ? 'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-300' : 
+                                 index === 1 ? 'bg-gradient-to-r from-gray-50 to-slate-50 border-gray-300' : 
+                                 index === 2 ? 'bg-gradient-to-r from-orange-50 to-red-50 border-orange-300' : 'bg-white border-gray-200';
+                
+                const medal = index === 0 ? '<i class="fas fa-trophy text-yellow-500 text-xl"></i>' : 
+                             index === 1 ? '<i class="fas fa-medal text-gray-400 text-xl"></i>' : 
+                             index === 2 ? '<i class="fas fa-award text-orange-500 text-xl"></i>' : 
+                             `<span class="text-xl font-bold text-gray-600">${index + 1}</span>`;
+
+                container.innerHTML += `
+                    <div class="flex items-center justify-between p-6 rounded-2xl border-2 ${rankClass} transition-all duration-300 hover:shadow-lg hover:scale-105">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 flex items-center justify-center">
+                                ${medal}
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-800 text-lg">${division.name}</p>
+                                <p class="text-gray-600 flex items-center">
+                                    <i class="fas fa-users mr-2"></i>
+                                    ${division.totalResponses} responden
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-2xl text-blue-600">${division.avgRating.toFixed(1)}</p>
+                            <p class="text-sm text-gray-500">Rating Rata-rata</p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function updateFastestResponders() {
+            const sortedByTime = currentData
+                .filter(d => d.Timestamp && d.Type && d.Type.toLowerCase().includes('internal'))
+                .sort((a, b) => new Date(a.Timestamp) - new Date(b.Timestamp))
+                .slice(0, 8);
+
+            const container = document.getElementById('fastestResponders');
+            container.innerHTML = '';
+
+            if (sortedByTime.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-inbox text-5xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 text-lg">Tidak ada data waktu respons</p>
+                    </div>
+                `;
+                return;
+            }
+
+            sortedByTime.forEach((responder, index) => {
+                const time = new Date(responder.Timestamp);
+                const timeString = time.toLocaleTimeString('id-ID', { 
+                    hour: '2-digit', 
+                    minute: '2-digit' 
+                });
+
+                const speedClass = index < 3 ? 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-300' : 'bg-white border-gray-200';
+                const speedIcon = index < 3 ? '<i class="fas fa-bolt text-green-600 text-xl"></i>' : '<i class="fas fa-clock text-gray-500 text-xl"></i>';
+
+                container.innerHTML += `
+                    <div class="flex items-center justify-between p-6 rounded-2xl border-2 ${speedClass} transition-all duration-300 hover:shadow-lg hover:scale-105">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-10 h-10 flex items-center justify-center">
+                                ${speedIcon}
+                            </div>
+                            <div>
+                                <p class="font-bold text-gray-800 text-lg">${responder.Nama}</p>
+                                <p class="text-gray-600 flex items-center">
+                                    <i class="fas fa-building mr-2"></i>
+                                    ${responder.Division}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-bold text-lg text-blue-600">${timeString}</p>
+                            <p class="text-sm text-gray-500">Waktu Respons</p>
+                        </div>
+                    </div>
+                `;
             });
         }
 
@@ -849,456 +891,6 @@
             const externalData = currentData.filter(d => d.Type && !d.Type.toLowerCase().includes('internal'));
             const externalRanking = calculateRanking(externalData);
             displayRanking('externalRanking', externalRanking);
-
-            // Division rankings
-            updateDivisionRankings();
-
-            // Fastest responders
-            updateFastestResponders();
-        }
-
-        function updateDivisionRankings() {
-            // Internal division ranking
-            const internalData = currentData.filter(d => d.Type && d.Type.toLowerCase().includes('internal'));
-            const internalDivisionRanking = calculateDivisionRanking(internalData);
-            displayDivisionRanking('divisionInternalRanking', internalDivisionRanking);
-
-            // External division ranking (based on external assessment of divisions)
-            const externalData = currentData.filter(d => d.Type && !d.Type.toLowerCase().includes('internal'));
-            const externalDivisionRanking = calculateDivisionRanking(externalData);
-            displayDivisionRanking('divisionExternalRanking', externalDivisionRanking);
-        }
-
-        function calculateDivisionRanking(data) {
-            const grouped = {};
-            data.forEach(d => {
-                const division = d.Division || 'Tidak Diketahui';
-                if (!grouped[division]) {
-                    grouped[division] = {
-                        division: division,
-                        ratings: [],
-                        respondents: new Set()
-                    };
-                }
-                const rating = parseFloat(d.Rating);
-                if (!isNaN(rating)) {
-                    grouped[division].ratings.push(rating);
-                    grouped[division].respondents.add(d.Nama || 'Unknown');
-                }
-            });
-
-            return Object.values(grouped)
-                .map(div => ({
-                    ...div,
-                    avgRating: div.ratings.length > 0 ? 
-                        div.ratings.reduce((a, b) => a + b, 0) / div.ratings.length : 0,
-                    totalResponses: div.ratings.length,
-                    uniqueRespondents: div.respondents.size
-                }))
-                .sort((a, b) => b.avgRating - a.avgRating)
-                .slice(0, 8);
-        }
-
-        function displayDivisionRanking(containerId, ranking) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-
-            if (ranking.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-8">
-                        <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500">Tidak ada data divisi untuk ditampilkan</p>
-                    </div>
-                `;
-                return;
-            }
-
-            ranking.forEach((division, index) => {
-                const rankClass = index === 0 ? 'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-200' : 
-                                 index === 1 ? 'bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200' : 
-                                 index === 2 ? 'bg-gradient-to-r from-orange-50 to-red-50 border-orange-200' : 'bg-white border-gray-100';
-                
-                const medal = index === 0 ? '<i class="fas fa-trophy text-yellow-500"></i>' : 
-                             index === 1 ? '<i class="fas fa-medal text-gray-400"></i>' : 
-                             index === 2 ? '<i class="fas fa-award text-orange-500"></i>' : 
-                             `<span class="text-lg font-bold text-gray-600">${index + 1}</span>`;
-
-                container.innerHTML += `
-                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 p-4 rounded-xl border ${rankClass} transition-all duration-300 hover:shadow-md">
-                        <div class="flex items-center space-x-4">
-                            <div class="w-8 h-8 flex items-center justify-center flex-shrink-0">
-                                ${medal}
-                            </div>
-                            <div>
-                                <p class="font-semibold text-gray-800">${division.division}</p>
-                                <p class="text-sm text-gray-600 flex items-center">
-                                    <i class="fas fa-users mr-1"></i>
-                                    ${division.uniqueRespondents} responden unik
-                                </p>
-                            </div>
-                        </div>
-                        <div class="text-right">
-                            <p class="font-bold text-xl text-blue-600">${division.avgRating.toFixed(1)}</p>
-                            <p class="text-xs text-gray-500 flex items-center">
-                                <i class="fas fa-comment-dots mr-1"></i>
-                                ${division.totalResponses} total respon
-                            </p>
-                        </div>
-                    </div>
-                `;
-            });
-        }
-
-        function updateLowestScoringTeams() {
-            // Calculate division rankings and get lowest scoring ones
-            const allDivisionData = {};
-            
-            currentData.forEach(d => {
-                const division = d.Division || 'Tidak Diketahui';
-                if (!allDivisionData[division]) {
-                    allDivisionData[division] = {
-                        division: division,
-                        ratings: [],
-                        respondents: [],
-                        feedback: []
-                    };
-                }
-                const rating = parseFloat(d.Rating);
-                if (!isNaN(rating)) {
-                    allDivisionData[division].ratings.push(rating);
-                    allDivisionData[division].respondents.push(d.Nama || 'Unknown');
-                    if (d.Reason && d.Reason.trim()) {
-                        allDivisionData[division].feedback.push(d.Reason.trim());
-                    }
-                }
-            });
-
-            const lowestScoring = Object.values(allDivisionData)
-                .map(div => ({
-                    ...div,
-                    avgRating: div.ratings.length > 0 ? 
-                        div.ratings.reduce((a, b) => a + b, 0) / div.ratings.length : 0,
-                    totalResponses: div.ratings.length,
-                    lowRatings: div.ratings.filter(r => r < 3).length
-                }))
-                .filter(div => div.avgRating > 0)
-                .sort((a, b) => a.avgRating - b.avgRating)
-                .slice(0, 5);
-
-            displayLowestScoringTeams(lowestScoring);
-        }
-
-        function displayLowestScoringTeams(teams) {
-            const container = document.getElementById('lowestScoringTeams');
-            container.innerHTML = '';
-
-            if (teams.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-8">
-                        <i class="fas fa-check-circle text-4xl text-green-300 mb-4"></i>
-                        <p class="text-gray-500">Semua tim/divisi memiliki performa yang baik</p>
-                    </div>
-                `;
-                return;
-            }
-
-            teams.forEach((team, index) => {
-                const urgencyClass = team.avgRating < 2 ? 'from-red-100 to-red-50 border-red-300' :
-                                   team.avgRating < 3 ? 'from-orange-100 to-orange-50 border-orange-300' :
-                                   'from-yellow-100 to-yellow-50 border-yellow-300';
-
-                const urgencyIcon = team.avgRating < 2 ? 'fas fa-exclamation-circle text-red-600' :
-                                   team.avgRating < 3 ? 'fas fa-exclamation-triangle text-orange-600' :
-                                   'fas fa-info-circle text-yellow-600';
-
-                const urgencyText = team.avgRating < 2 ? 'Perlu Perhatian Segera' :
-                                   team.avgRating < 3 ? 'Perlu Perbaikan' :
-                                   'Perlu Optimalisasi';
-
-                container.innerHTML += `
-                    <div class="bg-gradient-to-r ${urgencyClass} rounded-xl p-4 border">
-                        <div class="flex flex-col sm:flex-row items-start justify-between gap-2 mb-3">
-                            <div class="flex items-center space-x-3">
-                                <div class="bg-white rounded-lg p-2 shadow-sm flex-shrink-0">
-                                    <i class="${urgencyIcon}"></i>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold text-gray-800">${team.division}</h4>
-                                    <p class="text-sm text-gray-600">${urgencyText}</p>
-                                </div>
-                            </div>
-                            <div class="w-full sm:w-auto text-left sm:text-right mt-2 sm:mt-0">
-                                <p class="text-2xl font-bold text-gray-800">${team.avgRating.toFixed(1)}</p>
-                                <p class="text-xs text-gray-500">dari 5.0</p>
-                            </div>
-                        </div>
-                        
-                        <div class="grid grid-cols-3 gap-3 text-sm">
-                            <div class="bg-white/50 rounded-lg p-2 text-center">
-                                <p class="font-semibold text-gray-700">${team.totalResponses}</p>
-                                <p class="text-xs text-gray-600">Total Respon</p>
-                            </div>
-                            <div class="bg-white/50 rounded-lg p-2 text-center">
-                                <p class="font-semibold text-gray-700">${team.lowRatings}</p>
-                                <p class="text-xs text-gray-600">Rating < 3</p>
-                            </div>
-                            <div class="bg-white/50 rounded-lg p-2 text-center">
-                                <p class="font-semibold text-gray-700">${team.respondents.length}</p>
-                                <p class="text-xs text-gray-600">Responden</p>
-                            </div>
-                        </div>
-
-                        ${team.feedback.length > 0 ? `
-                            <div class="mt-3 bg-white/30 rounded-lg p-3">
-                                <p class="text-xs font-semibold text-gray-700 mb-2 flex items-center">
-                                    <i class="fas fa-comment-dots mr-1"></i>
-                                    Feedback Utama:
-                                </p>
-                                <p class="text-xs text-gray-700 italic">"${team.feedback[0]}"</p>
-                                ${team.feedback.length > 1 ? `<p class="text-xs text-gray-500 mt-1">+${team.feedback.length - 1} feedback lainnya</p>` : ''}
-                            </div>
-                        ` : ''}
-                    </div>
-                `;
-            });
-        }
-
-        function updateCriticismSuggestions() {
-            // Collect all feedback, criticism, and suggestions
-            const allFeedback = [];
-            
-            currentData.forEach(d => {
-                const responder = d.Nama || 'Anonim';
-                const division = d.Division || 'Tidak Diketahui';
-                const rating = parseFloat(d.Rating) || 0;
-                
-                // Collect different types of feedback
-                if (d.Reason && d.Reason.trim()) {
-                    allFeedback.push({
-                        type: 'Alasan Rating',
-                        content: d.Reason.trim(),
-                        responder: responder,
-                        division: division,
-                        rating: rating,
-                        priority: rating < 3 ? 'high' : rating < 4 ? 'medium' : 'low'
-                    });
-                }
-                
-                if (d['Feedback Umum'] && d['Feedback Umum'].trim()) {
-                    allFeedback.push({
-                        type: 'Feedback Umum',
-                        content: d['Feedback Umum'].trim(),
-                        responder: responder,
-                        division: division,
-                        rating: rating,
-                        priority: rating < 3 ? 'high' : rating < 4 ? 'medium' : 'low'
-                    });
-                }
-
-                // Check for other potential feedback columns
-                Object.keys(d).forEach(key => {
-                    if ((key.toLowerCase().includes('saran') || 
-                         key.toLowerCase().includes('kritik') || 
-                         key.toLowerCase().includes('komentar') ||
-                         key.toLowerCase().includes('masukan')) && 
-                        d[key] && d[key].trim() && 
-                        d[key].trim() !== d.Reason && 
-                        d[key].trim() !== d['Feedback Umum']) {
-                        allFeedback.push({
-                            type: key,
-                            content: d[key].trim(),
-                            responder: responder,
-                            division: division,
-                            rating: rating,
-                            priority: rating < 3 ? 'high' : rating < 4 ? 'medium' : 'low'
-                        });
-                    }
-                });
-            });
-
-            // Sort by priority and rating
-            const sortedFeedback = allFeedback
-                .filter(f => f.content.length > 10) // Filter out very short feedback
-                .sort((a, b) => {
-                    const priorityOrder = { high: 3, medium: 2, low: 1 };
-                    if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
-                        return priorityOrder[b.priority] - priorityOrder[a.priority];
-                    }
-                    return a.rating - b.rating;
-                })
-                .slice(0, 10); // Show top 10 feedback
-
-            displayCriticismSuggestions(sortedFeedback);
-        }
-
-        function displayCriticismSuggestions(feedback) {
-            const container = document.getElementById('criticismSuggestions');
-            container.innerHTML = '';
-
-            if (feedback.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-8">
-                        <i class="fas fa-comment-slash text-4xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500">Tidak ada kritik atau saran yang tersedia</p>
-                    </div>
-                `;
-                return;
-            }
-
-            // Create wrapper div for all feedback items
-            const feedbackWrapper = document.createElement('div');
-            feedbackWrapper.className = 'space-y-4';
-
-            feedback.forEach((item, index) => {
-                const priorityClass = item.priority === 'high' ? 'from-red-50 to-pink-50 border-red-200' :
-                                     item.priority === 'medium' ? 'from-orange-50 to-yellow-50 border-orange-200' :
-                                     'from-blue-50 to-indigo-50 border-blue-200';
-
-                const priorityIcon = item.priority === 'high' ? 'fas fa-exclamation-circle text-red-600' :
-                                    item.priority === 'medium' ? 'fas fa-exclamation-triangle text-orange-600' :
-                                    'fas fa-info-circle text-blue-600';
-
-                const typeIcon = item.type.toLowerCase().includes('saran') ? 'fas fa-lightbulb' :
-                                item.type.toLowerCase().includes('kritik') ? 'fas fa-comment-alt' :
-                                'fas fa-comment-dots';
-
-                const feedbackItem = document.createElement('div');
-                feedbackItem.className = `bg-gradient-to-r ${priorityClass} rounded-xl p-4 border`;
-                feedbackItem.innerHTML = `
-                    <div class="flex items-start space-x-3 mb-3">
-                        <div class="bg-white rounded-lg p-2 shadow-sm">
-                            <i class="${priorityIcon}"></i>
-                        </div>
-                        <div class="flex-1">
-                            <div class="flex items-center justify-between mb-2">
-                                <div class="flex items-center space-x-2">
-                                    <i class="${typeIcon} text-gray-600 text-sm"></i>
-                                    <span class="text-sm font-semibold text-gray-700">${item.type}</span>
-                                </div>
-                                <div class="flex items-center space-x-2">
-                                    <span class="bg-white/70 text-xs px-2 py-1 rounded-full font-medium">
-                                        ${item.rating.toFixed(1)} ⭐
-                                    </span>
-                                </div>
-                            </div>
-                            <p class="text-gray-800 text-sm leading-relaxed mb-2">"${item.content}"</p>
-                            <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between text-xs text-gray-600 gap-1">
-                                <span class="flex items-center">
-                                    <i class="fas fa-user mr-1"></i>
-                                    ${item.responder}
-                                </span>
-                                <span class="flex items-center">
-                                    <i class="fas fa-building mr-1"></i>
-                                    ${item.division}
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                feedbackWrapper.appendChild(feedbackItem);
-            });
-
-            // Add all feedback items to container
-            container.appendChild(feedbackWrapper);
-
-            // Check if content height exceeds container and add scroll if needed
-            setTimeout(() => {
-                const containerHeight = container.offsetHeight;
-                const wrapperHeight = feedbackWrapper.offsetHeight;
-                
-                if (wrapperHeight > 400) { // If content is taller than 400px
-                    container.style.maxHeight = '400px';
-                    container.style.overflowY = 'auto';
-                    container.classList.add('pr-2'); // Add padding for scrollbar
-                }
-            }, 100);
-        }
-
-        function updateFastestResponders() {
-            const internalData = currentData.filter(d => d.Type && d.Type.toLowerCase().includes('internal'));
-            
-            // Parse timestamps and calculate response speed
-            const respondersWithTime = internalData.map(d => {
-                const timestamp = new Date(d.Timestamp);
-                return {
-                    name: d.Nama || 'Unknown',
-                    division: d.Division || 'Tidak Diketahui',
-                    timestamp: timestamp,
-                    rating: parseFloat(d.Rating) || 0
-                };
-            }).filter(d => !isNaN(d.timestamp.getTime()));
-
-            // Group by unique names and get earliest response
-            const uniqueResponders = {};
-            respondersWithTime.forEach(responder => {
-                if (!uniqueResponders[responder.name] || responder.timestamp < uniqueResponders[responder.name].timestamp) {
-                    uniqueResponders[responder.name] = responder;
-                }
-            });
-
-            // Sort by timestamp (earliest first) and take top 6
-            const fastestResponders = Object.values(uniqueResponders)
-                .sort((a, b) => a.timestamp - b.timestamp)
-                .slice(0, 6);
-
-            displayFastestResponders(fastestResponders);
-        }
-
-        function displayFastestResponders(responders) {
-            const container = document.getElementById('fastestResponders');
-            container.innerHTML = '';
-
-            if (responders.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-full text-center py-8">
-                        <i class="fas fa-clock text-4xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500">Tidak ada data waktu respons untuk ditampilkan</p>
-                    </div>
-                `;
-                return;
-            }
-
-            responders.forEach((responder, index) => {
-                const speedIcon = index === 0 ? 'fas fa-rocket text-red-500' : 
-                                 index === 1 ? 'fas fa-fighter-jet text-orange-500' : 
-                                 index === 2 ? 'fas fa-shipping-fast text-yellow-500' : 
-                                 'fas fa-running text-blue-500';
-
-                const timeString = responder.timestamp.toLocaleString('id-ID', {
-                    day: '2-digit',
-                    month: '2-digit',
-                    year: 'numeric',
-                    hour: '2-digit',
-                    minute: '2-digit'
-                });
-
-                container.innerHTML += `
-                    <div class="bg-gradient-to-r from-white to-gray-50 border border-gray-200 rounded-xl p-4 hover:shadow-md transition-all duration-300">
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="flex items-center space-x-2">
-                                <i class="${speedIcon}"></i>
-                                <span class="font-bold text-gray-700">#${index + 1}</span>
-                            </div>
-                            <div class="text-right">
-                                <span class="bg-blue-100 text-blue-800 text-xs font-semibold px-2 py-1 rounded-full">
-                                    ${responder.rating.toFixed(1)} ⭐
-                                </span>
-                            </div>
-                        </div>
-                        <div>
-                            <p class="font-semibold text-gray-800 mb-1">${responder.name}</p>
-                            <p class="text-sm text-gray-600 mb-2 flex items-center">
-                                <i class="fas fa-building mr-1"></i>
-                                ${responder.division}
-                            </p>
-                            <p class="text-xs text-gray-500 flex items-center">
-                                <i class="fas fa-clock mr-1"></i>
-                                ${timeString}
-                            </p>
-                        </div>
-                    </div>
-                `;
-            });
         }
 
         function calculateRanking(data) {
@@ -1327,7 +919,7 @@
                     totalResponses: person.ratings.length
                 }))
                 .sort((a, b) => b.avgRating - a.avgRating)
-                .slice(0, 10);
+                .slice(0, 8);
         }
 
         function displayRanking(containerId, ranking) {
@@ -1336,44 +928,139 @@
 
             if (ranking.length === 0) {
                 container.innerHTML = `
-                    <div class="text-center py-8">
-                        <i class="fas fa-inbox text-4xl text-gray-300 mb-4"></i>
-                        <p class="text-gray-500">Tidak ada data untuk ditampilkan</p>
+                    <div class="text-center py-12">
+                        <i class="fas fa-inbox text-5xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 text-lg">Tidak ada data untuk ditampilkan</p>
                     </div>
                 `;
                 return;
             }
 
             ranking.forEach((person, index) => {
-                const rankClass = index === 0 ? 'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-200' : 
-                                 index === 1 ? 'bg-gradient-to-r from-gray-50 to-slate-50 border-gray-200' : 
-                                 index === 2 ? 'bg-gradient-to-r from-orange-50 to-red-50 border-orange-200' : 'bg-white border-gray-100';
+                const rankClass = index === 0 ? 'bg-gradient-to-r from-yellow-50 to-amber-50 border-yellow-300' : 
+                                 index === 1 ? 'bg-gradient-to-r from-gray-50 to-slate-50 border-gray-300' : 
+                                 index === 2 ? 'bg-gradient-to-r from-orange-50 to-red-50 border-orange-300' : 'bg-white border-gray-200';
                 
-                const medal = index === 0 ? '<i class="fas fa-trophy text-yellow-500"></i>' : 
-                             index === 1 ? '<i class="fas fa-medal text-gray-400"></i>' : 
-                             index === 2 ? '<i class="fas fa-award text-orange-500"></i>' : 
-                             `<span class="text-lg font-bold text-gray-600">${index + 1}</span>`;
+                const medal = index === 0 ? '<i class="fas fa-trophy text-yellow-500 text-xl"></i>' : 
+                             index === 1 ? '<i class="fas fa-medal text-gray-400 text-xl"></i>' : 
+                             index === 2 ? '<i class="fas fa-award text-orange-500 text-xl"></i>' : 
+                             `<span class="text-xl font-bold text-gray-600">${index + 1}</span>`;
 
                 container.innerHTML += `
-                    <div class="flex items-center justify-between p-4 rounded-xl border ${rankClass} transition-all duration-300 hover:shadow-md">
+                    <div class="flex items-center justify-between p-6 rounded-2xl border-2 ${rankClass} transition-all duration-300 hover:shadow-lg hover:scale-105">
                         <div class="flex items-center space-x-4">
-                            <div class="w-8 h-8 flex items-center justify-center">
+                            <div class="w-10 h-10 flex items-center justify-center">
                                 ${medal}
                             </div>
                             <div>
-                                <p class="font-semibold text-gray-800">${person.name}</p>
-                                <p class="text-sm text-gray-600 flex items-center">
-                                    <i class="fas fa-building mr-1"></i>
+                                <p class="font-bold text-gray-800 text-lg">${person.name}</p>
+                                <p class="text-gray-600 flex items-center">
+                                    <i class="fas fa-building mr-2"></i>
                                     ${person.instansi} ${person.division ? '- ' + person.division : ''}
                                 </p>
                             </div>
                         </div>
-                        <div class="w-full sm:w-auto text-left sm:text-right">
-                            <p class="font-bold text-xl text-blue-600">${person.avgRating.toFixed(1)}</p>
-                            <p class="text-xs text-gray-500 flex items-center sm:justify-end">
+                        <div class="text-right">
+                            <p class="font-bold text-2xl text-blue-600">${person.avgRating.toFixed(1)}</p>
+                            <p class="text-sm text-gray-500 flex items-center">
                                 <i class="fas fa-comment-dots mr-1"></i>
                                 ${person.totalResponses} respon
                             </p>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        function updateLowPerformanceAnalysis() {
+            const divisionData = {};
+            
+            currentData.forEach(d => {
+                if (d.Division && d.Type && d.Type.toLowerCase().includes('internal')) {
+                    const division = d.Division.trim();
+                    if (!divisionData[division]) {
+                        divisionData[division] = {
+                            name: division,
+                            ratings: [],
+                            feedback: []
+                        };
+                    }
+                    const rating = parseFloat(d.Rating);
+                    if (!isNaN(rating)) {
+                        divisionData[division].ratings.push(rating);
+                        if (rating < 3.5) {
+                            divisionData[division].feedback.push({
+                                name: d.Nama,
+                                rating: rating,
+                                reason: d.Reason || '',
+                                feedback: d['Feedback Umum'] || ''
+                            });
+                        }
+                    }
+                }
+            });
+
+            const lowPerformingDivisions = Object.values(divisionData)
+                .map(div => ({
+                    ...div,
+                    avgRating: div.ratings.length > 0 ? 
+                        div.ratings.reduce((a, b) => a + b, 0) / div.ratings.length : 0,
+                    totalResponses: div.ratings.length
+                }))
+                .filter(div => div.avgRating < 3.5)
+                .sort((a, b) => a.avgRating - b.avgRating);
+
+            const container = document.getElementById('lowPerformanceAnalysis');
+            container.innerHTML = '';
+
+            if (lowPerformingDivisions.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-thumbs-up text-5xl text-green-300 mb-4"></i>
+                        <p class="text-green-600 text-lg font-semibold">Semua divisi memiliki performa yang baik!</p>
+                        <p class="text-gray-500">Tidak ada divisi dengan rating di bawah 3.5</p>
+                    </div>
+                `;
+                return;
+            }
+
+            lowPerformingDivisions.forEach((division, index) => {
+                container.innerHTML += `
+                    <div class="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-300 rounded-2xl p-6 mb-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-4">
+                                <div class="bg-red-100 rounded-xl p-3">
+                                    <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold text-red-800 text-xl">${division.name}</h4>
+                                    <p class="text-red-600">Rating: ${division.avgRating.toFixed(1)}/5.0 • ${division.totalResponses} responden</p>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <span class="bg-red-200 text-red-800 px-4 py-2 rounded-full font-bold">
+                                    PERLU PERBAIKAN
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="bg-white/70 rounded-xl p-4">
+                            <h5 class="font-semibold text-gray-800 mb-3">
+                                <i class="fas fa-comments mr-2"></i>
+                                Feedback Negatif:
+                            </h5>
+                            <div class="space-y-3">
+                                ${division.feedback.slice(0, 3).map(fb => `
+                                    <div class="bg-gray-50 rounded-lg p-3">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="font-medium text-gray-800">${fb.name}</span>
+                                            <span class="text-red-600 font-bold">${fb.rating.toFixed(1)} ⭐</span>
+                                        </div>
+                                        ${fb.reason ? `<p class="text-gray-700 text-sm italic">"${fb.reason}"</p>` : ''}
+                                        ${fb.feedback ? `<p class="text-gray-700 text-sm italic">"${fb.feedback}"</p>` : ''}
+                                    </div>
+                                `).join('')}
+                            </div>
                         </div>
                     </div>
                 `;
@@ -1385,54 +1072,122 @@
             const avgRating = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
             const internal = currentData.filter(d => d.Type && d.Type.toLowerCase().includes('internal')).length;
             const external = currentData.length - internal;
+            const lowRatings = ratings.filter(r => r < 3).length;
+            const highRatings = ratings.filter(r => r >= 4).length;
 
             let analysis = `
                 <div class="space-y-6">
-                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 p-6 rounded-xl">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-chart-bar text-blue-600 text-xl mr-3"></i>
-                            <h4 class="font-bold text-blue-800 text-lg">Ringkasan Evaluasi</h4>
+                    <div class="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-200 p-6 rounded-2xl">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-chart-bar text-blue-600 text-2xl mr-3"></i>
+                            <h4 class="font-bold text-blue-800 text-xl">Ringkasan Evaluasi</h4>
                         </div>
-                        <p class="text-blue-700 leading-relaxed">Berdasarkan <strong>${currentData.length} responden</strong>, rating rata-rata building management adalah <strong>${avgRating.toFixed(1)}/5.0</strong>. Ini menunjukkan ${avgRating >= 4 ? 'kinerja yang sangat baik' : avgRating >= 3 ? 'kinerja yang cukup baik dengan ruang perbaikan' : 'kinerja yang memerlukan perhatian serius'}.</p>
+                        <p class="text-blue-700 leading-relaxed text-lg">
+                            Berdasarkan <strong>${currentData.length} responden</strong>, rating rata-rata building management adalah 
+                            <strong>${avgRating.toFixed(1)}/5.0</strong>. Ini menunjukkan 
+                            ${avgRating >= 4 ? 'kinerja yang sangat baik' : avgRating >= 3 ? 'kinerja yang cukup baik dengan ruang perbaikan' : 'kinerja yang memerlukan perhatian serius'}.
+                        </p>
                     </div>
                     
-                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 p-6 rounded-xl">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-users text-green-600 text-xl mr-3"></i>
-                            <h4 class="font-bold text-green-800 text-lg">Komposisi Responden</h4>
+                    <div class="bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200 p-6 rounded-2xl">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-users text-green-600 text-2xl mr-3"></i>
+                            <h4 class="font-bold text-green-800 text-xl">Komposisi Responden</h4>
                         </div>
-                        <p class="text-green-700 leading-relaxed">Evaluasi melibatkan <strong>${internal} responden internal</strong> (${((internal/currentData.length)*100).toFixed(1)}%) dan <strong>${external} responden eksternal</strong> (${((external/currentData.length)*100).toFixed(1)}%). Keseimbangan perspektif internal dan eksternal memberikan gambaran yang komprehensif.</p>
+                        <p class="text-green-700 leading-relaxed text-lg">
+                            Evaluasi melibatkan <strong>${internal} responden internal</strong> (${((internal/currentData.length)*100).toFixed(1)}%) 
+                            dan <strong>${external} responden eksternal</strong> (${((external/currentData.length)*100).toFixed(1)}%). 
+                            Keseimbangan perspektif memberikan gambaran yang komprehensif.
+                        </p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-200 p-6 rounded-2xl">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-thumbs-up text-purple-600 text-xl mr-3"></i>
+                                <h4 class="font-bold text-purple-800">Kepuasan Tinggi</h4>
+                            </div>
+                            <p class="text-3xl font-bold text-purple-600">${highRatings}</p>
+                            <p class="text-purple-700">responden (${((highRatings/ratings.length)*100).toFixed(1)}%)</p>
+                        </div>
+                        
+                        <div class="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200 p-6 rounded-2xl">
+                            <div class="flex items-center mb-4">
+                                <i class="fas fa-exclamation-triangle text-orange-600 text-xl mr-3"></i>
+                                <h4 class="font-bold text-orange-800">Perlu Perhatian</h4>
+                            </div>
+                            <p class="text-3xl font-bold text-orange-600">${lowRatings}</p>
+                            <p class="text-orange-700">responden (${((lowRatings/ratings.length)*100).toFixed(1)}%)</p>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 p-6 rounded-2xl">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-lightbulb text-yellow-600 text-2xl mr-3"></i>
+                            <h4 class="font-bold text-yellow-800 text-xl">Rekomendasi Perbaikan</h4>
+                        </div>
+                        <div class="space-y-3">
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                                <p class="text-yellow-700">Perbaikan sistem AC dan ventilasi di seluruh gedung</p>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                                <p class="text-yellow-700">Peningkatan kebersihan dan maintenance toilet</p>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                                <p class="text-yellow-700">Perluasan area parkir untuk kendaraan</p>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                                <p class="text-yellow-700">Pelatihan customer service untuk staff</p>
+                            </div>
+                            <div class="flex items-start space-x-3">
+                                <i class="fas fa-check-circle text-green-600 mt-1"></i>
+                                <p class="text-yellow-700">Upgrade infrastruktur IT dan jaringan wifi</p>
+                            </div>
+                        </div>
                     </div>
             `;
 
             if (avgRating >= 4.0) {
                 analysis += `
-                    <div class="bg-gradient-to-r from-green-50 to-teal-50 border border-green-200 p-6 rounded-xl">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-thumbs-up text-green-600 text-xl mr-3"></i>
-                            <h4 class="font-bold text-green-800 text-lg">Kinerja Excellent</h4>
+                    <div class="bg-gradient-to-r from-green-50 to-teal-50 border-2 border-green-200 p-6 rounded-2xl">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-star text-green-600 text-2xl mr-3"></i>
+                            <h4 class="font-bold text-green-800 text-xl">Kinerja Excellent</h4>
                         </div>
-                        <p class="text-green-700 leading-relaxed">Building management menunjukkan kinerja yang excellent dengan rating di atas 4.0. Pertahankan standar pelayanan yang ada dan terus tingkatkan inovasi dalam pelayanan.</p>
+                        <p class="text-green-700 leading-relaxed text-lg">
+                            Building management menunjukkan kinerja yang excellent. Pertahankan standar pelayanan 
+                            yang ada dan terus tingkatkan inovasi dalam pelayanan.
+                        </p>
                     </div>
                 `;
             } else if (avgRating >= 3.0) {
                 analysis += `
-                    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 p-6 rounded-xl">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-exclamation-triangle text-yellow-600 text-xl mr-3"></i>
-                            <h4 class="font-bold text-yellow-800 text-lg">Perlu Optimalisasi</h4>
+                    <div class="bg-gradient-to-r from-yellow-50 to-orange-50 border-2 border-yellow-200 p-6 rounded-2xl">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-chart-line text-yellow-600 text-2xl mr-3"></i>
+                            <h4 class="font-bold text-yellow-800 text-xl">Perlu Optimalisasi</h4>
                         </div>
-                        <p class="text-yellow-700 leading-relaxed">Building management memiliki ruang untuk perbaikan yang signifikan. Fokus pada area yang mendapat rating rendah dan implementasikan strategi peningkatan kualitas pelayanan.</p>
+                        <p class="text-yellow-700 leading-relaxed text-lg">
+                            Building management memiliki ruang untuk perbaikan yang signifikan. Fokus pada area 
+                            yang mendapat rating rendah dan implementasikan strategi peningkatan kualitas.
+                        </p>
                     </div>
                 `;
             } else {
                 analysis += `
-                    <div class="bg-gradient-to-r from-red-50 to-pink-50 border border-red-200 p-6 rounded-xl">
-                        <div class="flex items-center mb-3">
-                            <i class="fas fa-exclamation-circle text-red-600 text-xl mr-3"></i>
-                            <h4 class="font-bold text-red-800 text-lg">Perlu Perbaikan Menyeluruh</h4>
+                    <div class="bg-gradient-to-r from-red-50 to-pink-50 border-2 border-red-200 p-6 rounded-2xl">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-exclamation-circle text-red-600 text-2xl mr-3"></i>
+                            <h4 class="font-bold text-red-800 text-xl">Perlu Perbaikan Menyeluruh</h4>
                         </div>
-                        <p class="text-red-700 leading-relaxed">Building management memerlukan perbaikan menyeluruh dan segera. Evaluasi ulang seluruh prosedur, standar pelayanan, dan implementasikan program perbaikan komprehensif.</p>
+                        <p class="text-red-700 leading-relaxed text-lg">
+                            Building management memerlukan perbaikan menyeluruh dan segera. Evaluasi ulang 
+                            seluruh prosedur dan implementasikan program perbaikan komprehensif.
+                        </p>
                     </div>
                 `;
             }
@@ -1441,1127 +1196,472 @@
             document.getElementById('analysisContent').innerHTML = analysis;
         }
 
-        function updateImprovementPoints() {
-            const lowRatings = currentData.filter(d => parseFloat(d.Rating) < 3);
-            const reasons = lowRatings.map(d => d.Reason).filter(r => r && r.trim());
-            const feedback = currentData.map(d => d['Feedback Umum']).filter(f => f && f.trim());
-
-            let points = [];
-
-            if (lowRatings.length > 0) {
-                points.push({
-                    icon: 'fas fa-exclamation-triangle',
-                    text: `Terdapat ${lowRatings.length} rating di bawah 3.0 yang memerlukan perhatian khusus dan tindak lanjut segera`,
-                    priority: 'high'
-                });
-            }
-
-            if (reasons.length > 0) {
-                points.push({
-                    icon: 'fas fa-search',
-                    text: 'Evaluasi mendalam terhadap alasan rating rendah untuk identifikasi akar masalah',
-                    priority: 'high'
-                });
-            }
-
-            if (feedback.length > 0) {
-                points.push({
-                    icon: 'fas fa-comments',
-                    text: 'Tindak lanjuti feedback umum dari responden untuk perbaikan berkelanjutan',
-                    priority: 'medium'
-                });
-            }
-
-            // Generic improvement points
-            points.push(
-                {
-                    icon: 'fas fa-handshake',
-                    text: 'Tingkatkan komunikasi dan koordinasi antar divisi untuk pelayanan yang lebih terintegrasi',
-                    priority: 'medium'
-                },
-                {
-                    icon: 'fas fa-graduation-cap',
-                    text: 'Lakukan pelatihan berkala untuk staff building management tentang standar pelayanan terbaru',
-                    priority: 'medium'
-                },
-                {
-                    icon: 'fas fa-monitor-heart-rate',
-                    text: 'Implementasikan sistem monitoring kualitas pelayanan secara real-time',
-                    priority: 'medium'
-                },
-                {
-                    icon: 'fas fa-reply-all',
-                    text: 'Buat mekanisme feedback yang lebih responsif dan mudah diakses',
-                    priority: 'low'
-                },
-                {
-                    icon: 'fas fa-cogs',
-                    text: 'Standardisasi prosedur operasional untuk konsistensi pelayanan',
-                    priority: 'low'
-                }
-            );
-
-            const container = document.getElementById('improvementPoints');
-            container.innerHTML = points.map(point => {
-                const priorityClass = point.priority === 'high' ? 'from-red-50 to-pink-50 border-red-200' :
-                                   point.priority === 'medium' ? 'from-yellow-50 to-orange-50 border-yellow-200' :
-                                   'from-blue-50 to-indigo-50 border-blue-200';
-                
-                const iconClass = point.priority === 'high' ? 'text-red-600' :
-                                point.priority === 'medium' ? 'text-yellow-600' :
-                                'text-blue-600';
-
-                return `
-                    <div class="flex items-start space-x-4 p-4 bg-gradient-to-r ${priorityClass} rounded-xl border transition-all duration-300 hover:shadow-md">
-                        <div class="bg-white rounded-lg p-2 shadow-sm">
-                            <i class="${point.icon} ${iconClass}"></i>
-                        </div>
-                        <p class="text-gray-800 leading-relaxed flex-1">${point.text}</p>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // PDF Preview and Download
-        document.getElementById('previewBtn').addEventListener('click', showPDFPreview);
-        document.getElementById('closePdfModal').addEventListener('click', closePDFPreview);
-        document.getElementById('cancelPreview').addEventListener('click', closePDFPreview);
-        document.getElementById('downloadFromPreview').addEventListener('click', generatePDFReport);
-
-        function showPDFPreview() {
-            const previewContent = generatePDFPreviewContent();
-            document.getElementById('pdfPreviewText').innerHTML = previewContent;
-            document.getElementById('pdfPreviewModal').classList.remove('hidden');
-        }
-
-        function closePDFPreview() {
-            document.getElementById('pdfPreviewModal').classList.add('hidden');
-        }
-
-        function generatePDFPreviewContent() {
-            const ratings = currentData.map(d => parseFloat(d.Rating)).filter(r => !isNaN(r));
-            const avgRating = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
-            const internal = currentData.filter(d => d.Type && d.Type.toLowerCase().includes('internal')).length;
-            const external = currentData.length - internal;
-
-            // Get lowest scoring teams
-            const allDivisionData = {};
-            currentData.forEach(d => {
-                const division = d.Division || 'Tidak Diketahui';
-                if (!allDivisionData[division]) {
-                    allDivisionData[division] = { division: division, ratings: [], feedback: [] };
-                }
-                const rating = parseFloat(d.Rating);
-                if (!isNaN(rating)) {
-                    allDivisionData[division].ratings.push(rating);
-                    if (d.Reason && d.Reason.trim()) {
-                        allDivisionData[division].feedback.push(d.Reason.trim());
-                    }
-                }
-            });
-
-            const lowestScoring = Object.values(allDivisionData)
-                .map(div => ({
-                    ...div,
-                    avgRating: div.ratings.length > 0 ? div.ratings.reduce((a, b) => a + b, 0) / div.ratings.length : 0,
-                    lowRatings: div.ratings.filter(r => r < 3).length
-                }))
-                .filter(div => div.avgRating > 0)
-                .sort((a, b) => a.avgRating - b.avgRating)
-                .slice(0, 3);
-
-            // Get criticism and suggestions
+        function updateFeedback() {
             const allFeedback = [];
+            
             currentData.forEach(d => {
                 const responder = d.Nama || 'Anonim';
                 const rating = parseFloat(d.Rating) || 0;
+                const division = d.Division || '';
                 
                 if (d.Reason && d.Reason.trim()) {
                     allFeedback.push({
-                        content: d.Reason.trim(),
                         responder: responder,
                         rating: rating,
-                        priority: rating < 3 ? 'high' : 'medium'
+                        division: division,
+                        type: 'Alasan Rating',
+                        content: d.Reason.trim(),
+                        priority: rating < 3 ? 'high' : rating < 4 ? 'medium' : 'low'
                     });
                 }
                 
                 if (d['Feedback Umum'] && d['Feedback Umum'].trim()) {
                     allFeedback.push({
-                        content: d['Feedback Umum'].trim(),
                         responder: responder,
                         rating: rating,
-                        priority: rating < 3 ? 'high' : 'medium'
+                        division: division,
+                        type: 'Saran Perbaikan',
+                        content: d['Feedback Umum'].trim(),
+                        priority: rating < 3 ? 'high' : rating < 4 ? 'medium' : 'low'
                     });
                 }
             });
 
-            const topFeedback = allFeedback
-                .filter(f => f.content.length > 10)
-                .sort((a, b) => a.rating - b.rating)
-                .slice(0, 5);
+            const sortedFeedback = allFeedback
+                .filter(f => f.content.length > 5)
+                .sort((a, b) => {
+                    const priorityOrder = { high: 3, medium: 2, low: 1 };
+                    if (priorityOrder[a.priority] !== priorityOrder[b.priority]) {
+                        return priorityOrder[b.priority] - priorityOrder[a.priority];
+                    }
+                    return a.rating - b.rating;
+                });
 
-            return `
-                <div class="space-y-8">
-                    <!-- Header -->
-                    <div class="text-center border-b pb-6">
-                        <div class="bg-gradient-to-r from-blue-600 to-purple-600 text-white p-6 rounded-lg mb-4">
-                            <h1 class="text-2xl font-bold mb-2">LAPORAN EVALUASI BUILDING MANAGEMENT</h1>
-                            <p class="text-blue-100">Otoritas Jasa Keuangan - Daerah Istimewa Yogyakarta</p>
-                        </div>
-                        <p class="text-gray-600">Periode: ${new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long' })}</p>
+            const container = document.getElementById('feedbackContent');
+            container.innerHTML = '';
+
+            if (sortedFeedback.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fas fa-comment-slash text-5xl text-gray-300 mb-4"></i>
+                        <p class="text-gray-500 text-lg">Tidak ada feedback yang tersedia</p>
                     </div>
+                `;
+                return;
+            }
 
-                    <!-- Executive Summary -->
-                    <div class="bg-blue-50 p-6 rounded-lg">
-                        <h2 class="text-xl font-bold text-blue-800 mb-4 flex items-center">
-                            <i class="fas fa-chart-line mr-2"></i>
-                            RINGKASAN EKSEKUTIF
-                        </h2>
-                        <div class="grid grid-cols-2 gap-4 text-sm">
-                            <div><strong>Total Responden:</strong> ${currentData.length} orang</div>
-                            <div><strong>Rating Rata-rata:</strong> ${avgRating.toFixed(2)}/5.0</div>
-                            <div><strong>Responden Internal:</strong> ${internal} orang (${((internal/currentData.length)*100).toFixed(1)}%)</div>
-                            <div><strong>Responden Eksternal:</strong> ${external} orang (${((external/currentData.length)*100).toFixed(1)}%)</div>
-                        </div>
-                        <div class="mt-4 p-3 bg-white rounded border-l-4 ${avgRating >= 4 ? 'border-green-500' : avgRating >= 3 ? 'border-yellow-500' : 'border-red-500'}">
-                            <p class="font-semibold ${avgRating >= 4 ? 'text-green-800' : avgRating >= 3 ? 'text-yellow-800' : 'text-red-800'}">
-                                Status Kinerja: ${avgRating >= 4 ? 'EXCELLENT' : avgRating >= 3 ? 'BAIK' : 'PERLU PERBAIKAN'}
-                            </p>
-                        </div>
-                    </div>
+            sortedFeedback.forEach((feedback, index) => {
+                const priorityClass = feedback.priority === 'high' ? 'from-red-50 to-pink-50 border-red-300' :
+                                     feedback.priority === 'medium' ? 'from-orange-50 to-yellow-50 border-orange-300' :
+                                     'from-blue-50 to-indigo-50 border-blue-300';
 
-                    <!-- Rating Distribution -->
-                    <div class="bg-gray-50 p-6 rounded-lg">
-                        <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
-                            <i class="fas fa-chart-bar mr-2"></i>
-                            DISTRIBUSI RATING
-                        </h2>
-                        <div class="grid grid-cols-5 gap-3 text-sm">
-                            ${[1,2,3,4,5].map(rating => {
-                                const count = ratings.filter(r => Math.floor(r) === rating).length;
-                                const percentage = ((count/ratings.length)*100).toFixed(1);
-                                return `
-                                    <div class="text-center p-3 bg-white rounded border">
-                                        <div class="text-2xl font-bold ${rating <= 2 ? 'text-red-600' : rating === 3 ? 'text-yellow-600' : 'text-green-600'}">${count}</div>
-                                        <div class="text-xs text-gray-600">Rating ${rating}</div>
-                                        <div class="text-xs text-gray-500">${percentage}%</div>
+                const priorityIcon = feedback.priority === 'high' ? 'fas fa-exclamation-circle text-red-600' :
+                                    feedback.priority === 'medium' ? 'fas fa-exclamation-triangle text-orange-600' :
+                                    'fas fa-info-circle text-blue-600';
+
+                const priorityLabel = feedback.priority === 'high' ? 'URGENT' :
+                                     feedback.priority === 'medium' ? 'PENTING' : 'INFO';
+
+                container.innerHTML += `
+                    <div class="bg-gradient-to-r ${priorityClass} rounded-2xl p-6 border-2">
+                        <div class="flex items-start space-x-4">
+                            <div class="bg-white rounded-xl p-3 shadow-sm">
+                                <i class="${priorityIcon} text-xl"></i>
+                            </div>
+                            <div class="flex-1">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center space-x-3">
+                                        <span class="font-bold text-gray-800">${feedback.responder}</span>
+                                        <span class="bg-white/70 text-sm px-3 py-1 rounded-full font-medium">
+                                            ${feedback.rating.toFixed(1)} ⭐
+                                        </span>
+                                        ${feedback.division ? `<span class="bg-gray-200 text-xs px-2 py-1 rounded-full">${feedback.division}</span>` : ''}
                                     </div>
-                                `;
-                            }).join('')}
-                        </div>
-                    </div>
-
-                    <!-- Lowest Scoring Teams -->
-                    ${lowestScoring.length > 0 ? `
-                        <div class="bg-red-50 p-6 rounded-lg">
-                            <h2 class="text-xl font-bold text-red-800 mb-4 flex items-center">
-                                <i class="fas fa-exclamation-triangle mr-2"></i>
-                                TIM/DIVISI DENGAN NILAI TERENDAH
-                            </h2>
-                            <div class="space-y-3">
-                                ${lowestScoring.map((team, index) => `
-                                    <div class="bg-white p-4 rounded border-l-4 border-red-400">
-                                        <div class="flex justify-between items-start mb-2">
-                                            <h3 class="font-semibold text-gray-800">${index + 1}. ${team.division}</h3>
-                                            <span class="text-xl font-bold text-red-600">${team.avgRating.toFixed(1)}/5.0</span>
-                                        </div>
-                                        <div class="text-sm text-gray-600 mb-2">
-                                            Total Respon: ${team.ratings.length} | Rating < 3: ${team.lowRatings}
-                                        </div>
-                                        ${team.feedback.length > 0 ? `
-                                            <div class="text-sm italic text-gray-700 bg-gray-50 p-2 rounded">
-                                                "${team.feedback[0]}"
-                                            </div>
-                                        ` : ''}
+                                    <div class="flex items-center space-x-2">
+                                        <span class="text-sm font-semibold text-gray-600">${feedback.type}</span>
+                                        <span class="bg-white/70 text-xs px-2 py-1 rounded-full font-bold">${priorityLabel}</span>
                                     </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    ` : ''}
-
-                    <!-- Criticism and Suggestions -->
-                    ${topFeedback.length > 0 ? `
-                        <div class="bg-orange-50 p-6 rounded-lg">
-                            <h2 class="text-xl font-bold text-orange-800 mb-4 flex items-center">
-                                <i class="fas fa-comments mr-2"></i>
-                                KRITIK & SARAN UTAMA
-                            </h2>
-                            <div class="space-y-3">
-                                ${topFeedback.map((feedback, index) => `
-                                    <div class="bg-white p-4 rounded border-l-4 ${feedback.priority === 'high' ? 'border-red-400' : 'border-orange-400'}">
-                                        <div class="flex justify-between items-start mb-2">
-                                            <span class="text-sm font-semibold text-gray-700">${feedback.responder}</span>
-                                            <span class="text-sm px-2 py-1 rounded ${feedback.priority === 'high' ? 'bg-red-100 text-red-800' : 'bg-orange-100 text-orange-800'}">
-                                                ${feedback.rating.toFixed(1)} ⭐
-                                            </span>
-                                        </div>
-                                        <p class="text-sm text-gray-800 italic">"${feedback.content}"</p>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        </div>
-                    ` : ''}
-
-                    <!-- Key Findings -->
-                    <div class="bg-indigo-50 p-6 rounded-lg">
-                        <h2 class="text-xl font-bold text-indigo-800 mb-4 flex items-center">
-                            <i class="fas fa-search mr-2"></i>
-                            TEMUAN UTAMA
-                        </h2>
-                        <ul class="space-y-2 text-sm">
-                            <li class="flex items-start">
-                                <i class="fas fa-check-circle text-indigo-600 mt-1 mr-2"></i>
-                                Tingkat kepuasan keseluruhan: ${avgRating >= 4 ? 'Tinggi' : avgRating >= 3 ? 'Sedang' : 'Rendah'} (${avgRating.toFixed(1)}/5.0)
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-users text-indigo-600 mt-1 mr-2"></i>
-                                Partisipasi responden: ${currentData.length >= 30 ? 'Memadai' : 'Perlu ditingkatkan'} (${currentData.length} responden)
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-balance-scale text-indigo-600 mt-1 mr-2"></i>
-                                Keseimbangan perspektif: ${Math.abs(internal - external) <= 10 ? 'Seimbang' : 'Tidak seimbang'}
-                            </li>
-                            ${ratings.filter(r => r < 3).length > 0 ? `
-                                <li class="flex items-start">
-                                    <i class="fas fa-exclamation-triangle text-red-600 mt-1 mr-2"></i>
-                                    Area perhatian: ${ratings.filter(r => r < 3).length} responden memberikan rating rendah
-                                </li>
-                            ` : ''}
-                        </ul>
-                    </div>
-
-                    <!-- Recommendations -->
-                    <div class="bg-green-50 p-6 rounded-lg">
-                        <h2 class="text-xl font-bold text-green-800 mb-4 flex items-center">
-                            <i class="fas fa-lightbulb mr-2"></i>
-                            REKOMENDASI STRATEGIS
-                        </h2>
-                        <div class="space-y-4 text-sm">
-                            <div>
-                                <h3 class="font-semibold text-green-700 mb-2">Jangka Pendek (1-3 bulan):</h3>
-                                <ul class="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                                    <li>Tindak lanjut segera untuk rating di bawah 3.0</li>
-                                    <li>Perbaikan komunikasi dengan stakeholder</li>
-                                    <li>Peningkatan responsivitas layanan</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold text-green-700 mb-2">Jangka Menengah (3-6 bulan):</h3>
-                                <ul class="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                                    <li>Implementasi sistem monitoring kualitas</li>
-                                    <li>Pelatihan komprehensif untuk staff</li>
-                                    <li>Standardisasi prosedur operasional</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h3 class="font-semibold text-green-700 mb-2">Jangka Panjang (6-12 bulan):</h3>
-                                <ul class="list-disc list-inside space-y-1 text-gray-700 ml-4">
-                                    <li>Pengembangan sistem feedback berkelanjutan</li>
-                                    <li>Evaluasi struktur organisasi</li>
-                                    <li>Implementasi teknologi untuk efisiensi</li>
-                                </ul>
+                                </div>
+                                <p class="text-gray-800 leading-relaxed italic">"${feedback.content}"</p>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Footer -->
-                    <div class="text-center text-sm text-gray-500 border-t pt-4">
-                        <p>Laporan ini digenerate pada: ${new Date().toLocaleString('id-ID')}</p>
-                        <p>© ${new Date().getFullYear()} Otoritas Jasa Keuangan - Daerah Istimewa Yogyakarta</p>
-                    </div>
-                </div>
-            `;
+                `;
+            });
         }
 
-        function generatePDFReport() {
-            // Close the preview modal first
-            closePDFPreview();
-            
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF('p', 'mm', 'a4');
-            
-            // Set margins
-            const margin = 15;
-            const pageWidth = 210;
-            const pageHeight = 297;
-            const contentWidth = pageWidth - (margin * 2);
-            
-            let yPosition = margin;
+        function refreshDashboard() {
+            if (currentData.length > 0) {
+                updateDashboard();
+            }
+        }
 
-            // Maroon color scheme
-            const maroonDark = [128, 0, 32];   // Dark maroon
-            const maroonMed = [165, 42, 42];   // Medium maroon  
-            const maroonLight = [205, 92, 92]; // Light maroon
-            const maroonBg = [250, 240, 240];  // Very light maroon background
+        async function exportToPDF() {
+            if (currentData.length === 0) {
+                alert('Tidak ada data untuk diekspor!');
+                return;
+            }
 
-            // Header with maroon theme
-            doc.setFillColor(...maroonDark);
-            doc.rect(0, 0, pageWidth, 30, 'F');
-            
-            doc.setTextColor(255, 255, 255);
-            doc.setFont('helvetica', 'bold');
-            doc.setFontSize(20);
-            doc.text('LAPORAN EVALUASI BUILDING MANAGEMENT', margin, 18);
-            
-            doc.setFontSize(12);
-            doc.text('Otoritas Jasa Keuangan - Daerah Istimewa Yogyakarta', margin, 25);
-            
-            yPosition = 40;
-            doc.setTextColor(0, 0, 0);
+            // Show loading
+            exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Generating PDF...';
+            exportBtn.disabled = true;
 
-            // Calculate data for report
-            const ratings = currentData.map(d => parseFloat(d.Rating)).filter(r => !isNaN(r));
-            const avgRating = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
-            const internal = currentData.filter(d => d.Type && d.Type.toLowerCase().includes('internal')).length;
-            const external = currentData.length - internal;
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('p', 'mm', 'a4');
+                
+                // Set margins (narrow)
+                const margin = 10;
+                const pageWidth = 210;
+                const pageHeight = 297;
+                const contentWidth = pageWidth - (margin * 2);
+                
+                let yPos = margin;
 
-            // Helper function to add section header
-            function addSectionHeader(title, yPos) {
-                doc.setFillColor(...maroonMed);
-                doc.rect(margin, yPos - 5, contentWidth, 8, 'F');
+                // Calculate statistics
+                const ratings = currentData.map(d => parseFloat(d.Rating)).filter(r => !isNaN(r));
+                const avgRating = ratings.length > 0 ? ratings.reduce((a, b) => a + b, 0) / ratings.length : 0;
+                const internal = currentData.filter(d => d.Type && d.Type.toLowerCase().includes('internal')).length;
+                const external = currentData.length - internal;
+                const lowRatings = ratings.filter(r => r < 3).length;
+                const highRatings = ratings.filter(r => r >= 4).length;
+
+                // Header with maroon background
+                doc.setFillColor(128, 0, 32); // Maroon color
+                doc.rect(0, 0, pageWidth, 50, 'F');
+                
+                // Title
                 doc.setTextColor(255, 255, 255);
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(12);
-                doc.text(title, margin + 2, yPos);
+                doc.setFontSize(24);
+                doc.text('LAPORAN EVALUASI', pageWidth/2, 20, { align: 'center' });
+                doc.text('BUILDING MANAGEMENT', pageWidth/2, 30, { align: 'center' });
+                
+                doc.setFontSize(14);
+                doc.text('Otoritas Jasa Keuangan - Daerah Istimewa Yogyakarta', pageWidth/2, 40, { align: 'center' });
+                
+                yPos = 60;
+
+                // Date and time
                 doc.setTextColor(0, 0, 0);
-                return yPos + 10;
-            }
-
-            // Helper function to create tables
-            function createTable(headers, data, startY, colWidths) {
-                let currentY = startY;
-                
-                // Header row
-                doc.setFillColor(...maroonLight);
-                doc.rect(margin, currentY, contentWidth, 8, 'F');
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(9);
-                doc.setTextColor(255, 255, 255);
-                
-                let xPos = margin + 2;
-                headers.forEach((header, i) => {
-                    doc.text(header, xPos, currentY + 5);
-                    xPos += colWidths[i];
-                });
-                
-                currentY += 8;
-                doc.setTextColor(0, 0, 0);
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(8);
-                
-                // Data rows
-                data.forEach((row, index) => {
-                    if (currentY > pageHeight - 30) {
-                        doc.addPage();
-                        currentY = margin;
-                    }
-                    
-                    // Alternate row colors
-                    if (index % 2 === 0) {
-                        doc.setFillColor(...maroonBg);
-                        doc.rect(margin, currentY, contentWidth, 6, 'F');
-                    }
-                    
-                    xPos = margin + 2;
-                    row.forEach((cell, i) => {
-                        const cellText = doc.splitTextToSize(String(cell), colWidths[i] - 4);
-                        doc.text(cellText[0] || '', xPos, currentY + 4);
-                        xPos += colWidths[i];
-                    });
-                    currentY += 6;
-                });
-                
-                return currentY + 5;
-            }
-
-            // Executive Summary with table
-            yPosition = addSectionHeader('RINGKASAN EKSEKUTIF', yPosition);
-            
-            const summaryData = [
-                ['Periode Evaluasi', new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long' })],
-                ['Total Responden', `${currentData.length} orang`],
-                ['Responden Internal', `${internal} orang (${((internal/currentData.length)*100).toFixed(1)}%)`],
-                ['Responden Eksternal', `${external} orang (${((external/currentData.length)*100).toFixed(1)}%)`],
-                ['Rating Rata-rata', `${avgRating.toFixed(2)}/5.0`],
-                ['Status Kinerja', avgRating >= 4 ? 'EXCELLENT' : avgRating >= 3 ? 'BAIK' : 'PERLU PERBAIKAN'],
-                ['Standar Deviasi', calculateStandardDeviation(ratings).toFixed(2)],
-                ['Median Rating', calculateMedian(ratings).toFixed(1)]
-            ];
-            
-            yPosition = createTable(['Indikator', 'Nilai'], summaryData, yPosition, [60, 120]);
-
-            // Rating Distribution Table
-            yPosition = addSectionHeader('DISTRIBUSI RATING', yPosition);
-            
-            const ratingCounts = {};
-            for (let i = 1; i <= 5; i++) {
-                ratingCounts[i] = ratings.filter(r => Math.floor(r) === i).length;
-            }
-            
-            const ratingData = [
-                ['Rating 5 (Sangat Baik)', ratingCounts[5], `${((ratingCounts[5]/ratings.length)*100).toFixed(1)}%`],
-                ['Rating 4 (Baik)', ratingCounts[4], `${((ratingCounts[4]/ratings.length)*100).toFixed(1)}%`],
-                ['Rating 3 (Cukup)', ratingCounts[3], `${((ratingCounts[3]/ratings.length)*100).toFixed(1)}%`],
-                ['Rating 2 (Kurang)', ratingCounts[2], `${((ratingCounts[2]/ratings.length)*100).toFixed(1)}%`],
-                ['Rating 1 (Sangat Kurang)', ratingCounts[1], `${((ratingCounts[1]/ratings.length)*100).toFixed(1)}%`]
-            ];
-            
-            yPosition = createTable(['Kategori Rating', 'Jumlah', 'Persentase'], ratingData, yPosition, [80, 40, 60]);
-
-            // Division Rankings - Internal Assessment
-            yPosition = addSectionHeader('RANKING DIVISI (PENILAIAN INTERNAL)', yPosition);
-            
-            const internalData = currentData.filter(d => d.Type && d.Type.toLowerCase().includes('internal'));
-            const internalDivisionRanking = calculateDivisionRanking(internalData);
-            
-            if (internalDivisionRanking.length > 0) {
-                const internalDivData = internalDivisionRanking.slice(0, 10).map((div, index) => [
-                    index + 1,
-                    div.division,
-                    div.avgRating.toFixed(2),
-                    div.totalResponses,
-                    div.uniqueRespondents
-                ]);
-                
-                yPosition = createTable(['Rank', 'Divisi', 'Avg Rating', 'Total Respon', 'Responden'], internalDivData, yPosition, [20, 70, 30, 30, 30]);
-            }
-
-            // Division Rankings - External Assessment  
-            yPosition = addSectionHeader('RANKING DIVISI (PENILAIAN EKSTERNAL)', yPosition);
-            
-            const externalData = currentData.filter(d => d.Type && !d.Type.toLowerCase().includes('internal'));
-            const externalDivisionRanking = calculateDivisionRanking(externalData);
-            
-            if (externalDivisionRanking.length > 0) {
-                const externalDivData = externalDivisionRanking.slice(0, 10).map((div, index) => [
-                    index + 1,
-                    div.division,
-                    div.avgRating.toFixed(2),
-                    div.totalResponses,
-                    div.uniqueRespondents
-                ]);
-                
-                yPosition = createTable(['Rank', 'Divisi', 'Avg Rating', 'Total Respon', 'Responden'], externalDivData, yPosition, [20, 70, 30, 30, 30]);
-            }
-
-            // Individual Rankings - Internal
-            yPosition = addSectionHeader('RANKING RESPONDEN INTERNAL', yPosition);
-            
-            const internalRanking = calculateRanking(internalData);
-            if (internalRanking.length > 0) {
-                const internalRankData = internalRanking.slice(0, 10).map((person, index) => [
-                    index + 1,
-                    person.name,
-                    person.division || person.instansi || '-',
-                    person.avgRating.toFixed(2),
-                    person.totalResponses
-                ]);
-                
-                yPosition = createTable(['Rank', 'Nama', 'Divisi/Instansi', 'Avg Rating', 'Respon'], internalRankData, yPosition, [20, 60, 50, 25, 25]);
-            }
-
-            // Individual Rankings - External
-            yPosition = addSectionHeader('RANKING RESPONDEN EKSTERNAL', yPosition);
-            
-            const externalRanking = calculateRanking(externalData);
-            if (externalRanking.length > 0) {
-                const externalRankData = externalRanking.slice(0, 10).map((person, index) => [
-                    index + 1,
-                    person.name,
-                    person.division || person.instansi || '-',
-                    person.avgRating.toFixed(2),
-                    person.totalResponses
-                ]);
-                
-                yPosition = createTable(['Rank', 'Nama', 'Divisi/Instansi', 'Avg Rating', 'Respon'], externalRankData, yPosition, [20, 60, 50, 25, 25]);
-            }
-
-            // Lowest Scoring Teams Table
-            yPosition = addSectionHeader('TIM/DIVISI DENGAN NILAI TERENDAH', yPosition);
-
-            // Get lowest scoring teams for PDF
-            const allDivisionDataPDF = {};
-            currentData.forEach(d => {
-                const division = d.Division || 'Tidak Diketahui';
-                if (!allDivisionDataPDF[division]) {
-                    allDivisionDataPDF[division] = { division: division, ratings: [], feedback: [] };
-                }
-                const rating = parseFloat(d.Rating);
-                if (!isNaN(rating)) {
-                    allDivisionDataPDF[division].ratings.push(rating);
-                    if (d.Reason && d.Reason.trim()) {
-                        allDivisionDataPDF[division].feedback.push(d.Reason.trim());
-                    }
-                }
-            });
-
-            const lowestScoringPDF = Object.values(allDivisionDataPDF)
-                .map(div => ({
-                    ...div,
-                    avgRating: div.ratings.length > 0 ? div.ratings.reduce((a, b) => a + b, 0) / div.ratings.length : 0,
-                    lowRatings: div.ratings.filter(r => r < 3).length
-                }))
-                .filter(div => div.avgRating > 0)
-                .sort((a, b) => a.avgRating - b.avgRating)
-                .slice(0, 8);
-
-            if (lowestScoringPDF.length > 0) {
-                const lowestTeamsData = lowestScoringPDF.map((team, index) => [
-                    index + 1,
-                    team.division,
-                    team.avgRating.toFixed(2),
-                    team.ratings.length,
-                    team.lowRatings,
-                    `${((team.lowRatings/team.ratings.length)*100).toFixed(1)}%`
-                ]);
-                
-                yPosition = createTable(['Rank', 'Divisi', 'Avg Rating', 'Total Respon', 'Rating <3', '% Rating Rendah'], lowestTeamsData, yPosition, [20, 50, 25, 25, 25, 35]);
-            } else {
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(10);
-                doc.text('Semua tim/divisi memiliki performa yang baik (rating >= 3.0)', margin, yPosition);
-                yPosition += 10;
-            }
+                const now = new Date();
+                doc.text(`Tanggal Laporan: ${now.toLocaleDateString('id-ID')} ${now.toLocaleTimeString('id-ID')}`, margin, yPos);
+                yPos += 15;
 
-            // Complete Feedback Section
-            yPosition = addSectionHeader('SELURUH KRITIK & SARAN RESPONDEN', yPosition);
+                // Executive Summary
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(16);
+                doc.setTextColor(128, 0, 32);
+                doc.text('I. RINGKASAN EKSEKUTIF', margin, yPos);
+                yPos += 10;
 
-            // Get ALL feedback for PDF
-            const allFeedbackPDF = [];
-            currentData.forEach((d, index) => {
-                const responder = d.Nama || `Responden ${index + 1}`;
-                const division = d.Division || 'Tidak Diketahui';
-                const rating = parseFloat(d.Rating) || 0;
-                const type = d.Type || 'Tidak Diketahui';
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(11);
+                doc.setTextColor(0, 0, 0);
                 
-                // Collect all types of feedback
-                if (d.Reason && d.Reason.trim()) {
-                    allFeedbackPDF.push({
-                        responder: responder,
-                        division: division,
-                        type: type,
-                        rating: rating,
-                        feedbackType: 'Alasan Rating',
-                        content: d.Reason.trim()
-                    });
-                }
-                
-                if (d['Feedback Umum'] && d['Feedback Umum'].trim()) {
-                    allFeedbackPDF.push({
-                        responder: responder,
-                        division: division,
-                        type: type,
-                        rating: rating,
-                        feedbackType: 'Feedback Umum',
-                        content: d['Feedback Umum'].trim()
-                    });
+                const summaryText = [
+                    `Evaluasi building management OJK DIY telah dilaksanakan dengan melibatkan ${currentData.length} responden`,
+                    `yang terdiri dari ${internal} responden internal (${((internal/currentData.length)*100).toFixed(1)}%) dan ${external} responden`,
+                    `eksternal (${((external/currentData.length)*100).toFixed(1)}%). Rating rata-rata yang diperoleh adalah ${avgRating.toFixed(2)}/5.0,`,
+                    `menunjukkan ${avgRating >= 4 ? 'kinerja yang sangat baik' : avgRating >= 3 ? 'kinerja yang cukup baik dengan ruang perbaikan' : 'kinerja yang memerlukan perhatian serius'}.`
+                ];
+
+                summaryText.forEach(line => {
+                    const splitText = doc.splitTextToSize(line, contentWidth);
+                    doc.text(splitText, margin, yPos);
+                    yPos += splitText.length * 5;
+                });
+
+                yPos += 10;
+
+                // Statistics Table
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.setTextColor(128, 0, 32);
+                doc.text('II. STATISTIK EVALUASI', margin, yPos);
+                yPos += 10;
+
+                // Table header
+                doc.setFillColor(128, 0, 32);
+                doc.rect(margin, yPos, contentWidth, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(10);
+                doc.text('INDIKATOR', margin + 2, yPos + 5);
+                doc.text('NILAI', margin + contentWidth - 30, yPos + 5);
+                yPos += 8;
+
+                // Table content
+                doc.setTextColor(0, 0, 0);
+                doc.setFont('helvetica', 'normal');
+                const statsData = [
+                    ['Total Responden', currentData.length.toString()],
+                    ['Rating Rata-rata', `${avgRating.toFixed(2)}/5.0`],
+                    ['Responden Internal', `${internal} (${((internal/currentData.length)*100).toFixed(1)}%)`],
+                    ['Responden Eksternal', `${external} (${((external/currentData.length)*100).toFixed(1)}%)`],
+                    ['Kepuasan Tinggi (≥4.0)', `${highRatings} (${((highRatings/ratings.length)*100).toFixed(1)}%)`],
+                    ['Perlu Perhatian (<3.0)', `${lowRatings} (${((lowRatings/ratings.length)*100).toFixed(1)}%)`]
+                ];
+
+                statsData.forEach((row, index) => {
+                    const bgColor = index % 2 === 0 ? 245 : 255;
+                    doc.setFillColor(bgColor, bgColor, bgColor);
+                    doc.rect(margin, yPos, contentWidth, 6, 'F');
+                    doc.text(row[0], margin + 2, yPos + 4);
+                    doc.text(row[1], margin + contentWidth - 30, yPos + 4);
+                    yPos += 6;
+                });
+
+                yPos += 10;
+
+                // Division Ranking
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.setTextColor(128, 0, 32);
+                doc.text('III. RANKING DIVISI', margin, yPos);
+                yPos += 10;
+
+                // Calculate division ranking
+                const divisionData = {};
+                currentData.forEach(d => {
+                    if (d.Division && d.Type && d.Type.toLowerCase().includes('internal')) {
+                        const division = d.Division.trim();
+                        if (!divisionData[division]) {
+                            divisionData[division] = { name: division, ratings: [] };
+                        }
+                        const rating = parseFloat(d.Rating);
+                        if (!isNaN(rating)) {
+                            divisionData[division].ratings.push(rating);
+                        }
+                    }
+                });
+
+                const divisionRanking = Object.values(divisionData)
+                    .map(div => ({
+                        ...div,
+                        avgRating: div.ratings.length > 0 ? 
+                            div.ratings.reduce((a, b) => a + b, 0) / div.ratings.length : 0,
+                        totalResponses: div.ratings.length
+                    }))
+                    .sort((a, b) => b.avgRating - a.avgRating);
+
+                // Division table header
+                doc.setFillColor(128, 0, 32);
+                doc.rect(margin, yPos, contentWidth, 8, 'F');
+                doc.setTextColor(255, 255, 255);
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(10);
+                doc.text('RANK', margin + 2, yPos + 5);
+                doc.text('DIVISI', margin + 20, yPos + 5);
+                doc.text('RATING', margin + 120, yPos + 5);
+                doc.text('RESPONDEN', margin + 150, yPos + 5);
+                yPos += 8;
+
+                // Division table content
+                doc.setTextColor(0, 0, 0);
+                doc.setFont('helvetica', 'normal');
+                divisionRanking.slice(0, 10).forEach((division, index) => {
+                    const bgColor = index % 2 === 0 ? 245 : 255;
+                    doc.setFillColor(bgColor, bgColor, bgColor);
+                    doc.rect(margin, yPos, contentWidth, 6, 'F');
+                    doc.text((index + 1).toString(), margin + 2, yPos + 4);
+                    doc.text(division.name, margin + 20, yPos + 4);
+                    doc.text(division.avgRating.toFixed(2), margin + 120, yPos + 4);
+                    doc.text(division.totalResponses.toString(), margin + 150, yPos + 4);
+                    yPos += 6;
+                });
+
+                // Check if we need a new page
+                if (yPos > pageHeight - 50) {
+                    doc.addPage();
+                    yPos = margin;
                 }
 
-                // Check for other feedback columns
-                Object.keys(d).forEach(key => {
-                    if ((key.toLowerCase().includes('saran') || 
-                         key.toLowerCase().includes('kritik') || 
-                         key.toLowerCase().includes('komentar') ||
-                         key.toLowerCase().includes('masukan')) && 
-                        d[key] && d[key].trim() && 
-                        d[key].trim() !== d.Reason && 
-                        d[key].trim() !== d['Feedback Umum']) {
-                        allFeedbackPDF.push({
-                            responder: responder,
-                            division: division,
-                            type: type,
-                            rating: rating,
-                            feedbackType: key,
-                            content: d[key].trim()
+                yPos += 10;
+
+                // Observasi dan Analisis
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.setTextColor(128, 0, 32);
+                doc.text('IV. OBSERVASI DAN ANALISIS', margin, yPos);
+                yPos += 10;
+
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(11);
+                doc.setTextColor(0, 0, 0);
+
+                const observations = [
+                    'A. TEMUAN UTAMA:',
+                    `• Rating rata-rata ${avgRating.toFixed(2)} menunjukkan ${avgRating >= 4 ? 'performa excellent' : avgRating >= 3 ? 'performa baik dengan ruang perbaikan' : 'performa yang memerlukan perbaikan menyeluruh'}`,
+                    `• ${highRatings} responden (${((highRatings/ratings.length)*100).toFixed(1)}%) memberikan rating tinggi (≥4.0)`,
+                    `• ${lowRatings} responden (${((lowRatings/ratings.length)*100).toFixed(1)}%) memberikan rating rendah (<3.0)`,
+                    '',
+                    'B. ANALISIS DIVISI:',
+                    divisionRanking.length > 0 ? `• Divisi terbaik: ${divisionRanking[0].name} (${divisionRanking[0].avgRating.toFixed(2)})` : '• Data divisi tidak tersedia',
+                    divisionRanking.length > 1 ? `• Divisi yang perlu perhatian: ${divisionRanking[divisionRanking.length-1].name} (${divisionRanking[divisionRanking.length-1].avgRating.toFixed(2)})` : '',
+                    '',
+                    'C. POLA RESPONS:',
+                    `• Partisipasi internal: ${((internal/currentData.length)*100).toFixed(1)}%`,
+                    `• Partisipasi eksternal: ${((external/currentData.length)*100).toFixed(1)}%`,
+                    '• Waktu respons menunjukkan antusiasme yang baik dari responden'
+                ];
+
+                observations.forEach(line => {
+                    if (line.trim()) {
+                        const splitText = doc.splitTextToSize(line, contentWidth);
+                        doc.text(splitText, margin, yPos);
+                        yPos += splitText.length * 5;
+                    } else {
+                        yPos += 3;
+                    }
+                });
+
+                // Check if we need a new page
+                if (yPos > pageHeight - 80) {
+                    doc.addPage();
+                    yPos = margin;
+                }
+
+                yPos += 10;
+
+                // Kritik dan Saran
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.setTextColor(128, 0, 32);
+                doc.text('V. KRITIK DAN SARAN RESPONDEN', margin, yPos);
+                yPos += 10;
+
+                // Get all feedback
+                const allFeedback = [];
+                currentData.forEach(d => {
+                    if (d.Reason && d.Reason.trim()) {
+                        allFeedback.push({
+                            responder: d.Nama || 'Anonim',
+                            division: d.Division || '',
+                            rating: parseFloat(d.Rating) || 0,
+                            content: d.Reason.trim(),
+                            type: 'Alasan Rating'
+                        });
+                    }
+                    if (d['Feedback Umum'] && d['Feedback Umum'].trim()) {
+                        allFeedback.push({
+                            responder: d.Nama || 'Anonim',
+                            division: d.Division || '',
+                            rating: parseFloat(d.Rating) || 0,
+                            content: d['Feedback Umum'].trim(),
+                            type: 'Saran Perbaikan'
                         });
                     }
                 });
-            });
 
-            // Sort by rating (lowest first) and create table
-            const sortedFeedbackPDF = allFeedbackPDF
-                .filter(f => f.content.length > 5)
-                .sort((a, b) => a.rating - b.rating);
+                const sortedFeedback = allFeedback
+                    .filter(f => f.content.length > 5)
+                    .sort((a, b) => a.rating - b.rating);
 
-            if (sortedFeedbackPDF.length > 0) {
-                // Create feedback table with better formatting
-                let feedbackTableData = [];
-                
-                sortedFeedbackPDF.forEach((feedback, index) => {
-                    // Truncate long content for table display
-                    let shortContent = feedback.content;
-                    if (shortContent.length > 60) {
-                        shortContent = shortContent.substring(0, 60) + '...';
-                    }
-                    
-                    feedbackTableData.push([
-                        index + 1,
-                        feedback.responder,
-                        feedback.division,
-                        feedback.rating.toFixed(1),
-                        feedback.feedbackType,
-                        shortContent
-                    ]);
-                });
-                
-                yPosition = createTable(['No', 'Responden', 'Divisi', 'Rating', 'Jenis', 'Feedback'], feedbackTableData, yPosition, [15, 35, 30, 20, 25, 55]);
-                
-                // Add detailed feedback section
-                yPosition += 5;
-                yPosition = addSectionHeader('DETAIL FEEDBACK LENGKAP', yPosition);
-                
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(8);
-                
-                sortedFeedbackPDF.forEach((feedback, index) => {
-                    if (yPosition > pageHeight - 40) {
-                        doc.addPage();
-                        yPosition = margin + 10;
-                    }
-                    
-                    // Feedback header
-                    doc.setFont('helvetica', 'bold');
-                    doc.text(`${index + 1}. ${feedback.responder} (${feedback.division}) - Rating: ${feedback.rating.toFixed(1)}`, margin, yPosition);
-                    yPosition += 5;
-                    
-                    doc.setFont('helvetica', 'italic');
-                    doc.text(`Jenis: ${feedback.feedbackType} | Tipe Responden: ${feedback.type}`, margin + 5, yPosition);
-                    yPosition += 5;
-                    
-                    // Feedback content
-                    doc.setFont('helvetica', 'normal');
-                    const contentLines = doc.splitTextToSize(`"${feedback.content}"`, contentWidth - 10);
-                    contentLines.forEach(line => {
-                        if (yPosition > pageHeight - 25) {
-                            doc.addPage();
-                            yPosition = margin + 10;
-                        }
-                        doc.text(line, margin + 5, yPosition);
-                        yPosition += 4;
-                    });
-                    yPosition += 3;
-                });
-                
-            } else {
                 doc.setFont('helvetica', 'normal');
                 doc.setFontSize(10);
-                doc.text('Tidak ada feedback yang tersedia dari responden', margin, yPosition);
-                yPosition += 10;
-            }
+                doc.setTextColor(0, 0, 0);
 
-            // Observasi dan Analisis Mendalam
-            yPosition = addSectionHeader('OBSERVASI DAN ANALISIS MENDALAM', yPosition);
-            
-            doc.setFont('helvetica', 'normal');
-            doc.setFontSize(9);
-            
-            // Statistical Analysis
-            const median = calculateMedian(ratings);
-            const mode = calculateMode(ratings);
-            const stdDev = calculateStandardDeviation(ratings);
-            const lowRatings = ratings.filter(r => r < 3).length;
-            const highRatings = ratings.filter(r => r >= 4).length;
-            
-            const observations = [
-                `1. ANALISIS STATISTIK DESKRIPTIF:`,
-                `   • Mean (Rata-rata): ${avgRating.toFixed(2)} menunjukkan ${avgRating >= 4 ? 'kinerja excellent' : avgRating >= 3.5 ? 'kinerja baik' : avgRating >= 3 ? 'kinerja cukup' : 'kinerja perlu perbaikan'}`,
-                `   • Median: ${median.toFixed(2)} ${median > avgRating ? '(distribusi condong ke kiri)' : median < avgRating ? '(distribusi condong ke kanan)' : '(distribusi simetris)'}`,
-                `   • Modus: ${mode} (rating yang paling sering diberikan)`,
-                `   • Standar Deviasi: ${stdDev.toFixed(2)} ${stdDev < 0.5 ? '(konsistensi tinggi)' : stdDev < 1 ? '(konsistensi sedang)' : '(variabilitas tinggi)'}`,
-                ``,
-                `2. DISTRIBUSI KEPUASAN:`,
-                `   • Rating Tinggi (≥4): ${highRatings} responden (${((highRatings/ratings.length)*100).toFixed(1)}%)`,
-                `   • Rating Rendah (<3): ${lowRatings} responden (${((lowRatings/ratings.length)*100).toFixed(1)}%)`,
-                `   • Tingkat Kepuasan: ${((highRatings/ratings.length)*100).toFixed(1)}% responden puas/sangat puas`,
-                ``,
-                `3. ANALISIS KOMPARATIF INTERNAL VS EKSTERNAL:`,
-                `   • Responden Internal: ${internal} orang memberikan perspektif dari dalam organisasi`,
-                `   • Responden Eksternal: ${external} orang memberikan perspektif objektif dari luar`,
-                `   • Rasio Partisipasi: ${internal}:${external} ${Math.abs(internal-external) <= 5 ? '(seimbang)' : internal > external ? '(dominasi internal)' : '(dominasi eksternal)'}`,
-                ``
-            ];
-
-            // Add performance insights
-            if (avgRating >= 4.0) {
-                observations.push(
-                    `4. INSIGHT KINERJA EXCELLENT:`,
-                    `   • Building management telah mencapai standar excellent dengan rating ${avgRating.toFixed(2)}`,
-                    `   • Konsistensi pelayanan ${stdDev < 0.5 ? 'sangat baik' : 'perlu dipertahankan'}`,
-                    `   • Fokus pada inovasi dan peningkatan berkelanjutan untuk mempertahankan prestasi`,
-                    ``
-                );
-            } else if (avgRating >= 3.0) {
-                observations.push(
-                    `4. INSIGHT AREA PERBAIKAN:`,
-                    `   • Terdapat ${lowRatings} responden (${((lowRatings/ratings.length)*100).toFixed(1)}%) yang memberikan rating rendah`,
-                    `   • Gap antara ekspektasi dan realitas perlu diatasi melalui perbaikan sistematis`,
-                    `   • Potensi peningkatan rating sebesar ${(4.0 - avgRating).toFixed(2)} poin dengan perbaikan targeted`,
-                    ``
-                );
-            } else {
-                observations.push(
-                    `4. INSIGHT PERBAIKAN MENDESAK:`,
-                    `   • Rating di bawah 3.0 menunjukkan ketidakpuasan yang signifikan`,
-                    `   • Diperlukan evaluasi menyeluruh terhadap sistem dan prosedur`,
-                    `   • Implementasi quick wins dan long-term improvement strategy`,
-                    ``
-                );
-            }
-
-            // Add trend analysis if possible
-            observations.push(
-                `5. REKOMENDASI BERDASARKAN OBSERVASI:`,
-                `   • Prioritas Utama: ${lowRatings > 0 ? 'Mengatasi feedback rating rendah' : 'Mempertahankan kualitas tinggi'}`,
-                `   • Fokus Pengembangan: ${stdDev > 1 ? 'Standardisasi pelayanan' : 'Inovasi dan peningkatan'}`,
-                `   • Strategi Komunikasi: ${Math.abs(internal-external) > 10 ? 'Meningkatkan partisipasi yang kurang' : 'Mempertahankan keseimbangan perspektif'}`,
-                ``
-            );
-
-            observations.forEach(line => {
-                if (yPosition > pageHeight - 25) {
-                    doc.addPage();
-                    yPosition = margin + 10;
-                }
-                doc.text(line, margin, yPosition);
-                yPosition += 4;
-            });
-
-            // Add Charts to PDF
-            yPosition += 10;
-            yPosition = addSectionHeader('VISUALISASI DATA', yPosition);
-            
-            // Create a temporary canvas for chart generation
-            const tempCanvas = document.createElement('canvas');
-            tempCanvas.width = 400;
-            tempCanvas.height = 300;
-            const tempCtx = tempCanvas.getContext('2d');
-            
-            try {
-                // Rating Distribution Chart
-                const ratingChart = new Chart(tempCtx, {
-                    type: 'bar',
-                    data: {
-                        labels: ['Rating 1', 'Rating 2', 'Rating 3', 'Rating 4', 'Rating 5'],
-                        datasets: [{
-                            label: 'Jumlah Responden',
-                            data: [ratingCounts[1], ratingCounts[2], ratingCounts[3], ratingCounts[4], ratingCounts[5]],
-                            backgroundColor: [
-                                'rgba(128, 0, 32, 0.8)',
-                                'rgba(165, 42, 42, 0.8)', 
-                                'rgba(205, 92, 92, 0.8)',
-                                'rgba(220, 20, 60, 0.8)',
-                                'rgba(178, 34, 34, 0.8)'
-                            ],
-                            borderColor: [
-                                'rgba(128, 0, 32, 1)',
-                                'rgba(165, 42, 42, 1)',
-                                'rgba(205, 92, 92, 1)', 
-                                'rgba(220, 20, 60, 1)',
-                                'rgba(178, 34, 34, 1)'
-                            ],
-                            borderWidth: 2
-                        }]
-                    },
-                    options: {
-                        responsive: false,
-                        animation: false,
-                        plugins: {
-                            title: {
-                                display: true,
-                                text: 'Distribusi Rating Evaluasi',
-                                font: { size: 16, weight: 'bold' },
-                                color: 'rgb(128, 0, 32)'
-                            },
-                            legend: { display: false }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                ticks: { stepSize: 1 }
-                            }
+                if (sortedFeedback.length === 0) {
+                    doc.text('Tidak ada kritik dan saran yang tersedia.', margin, yPos);
+                } else {
+                    sortedFeedback.slice(0, 15).forEach((feedback, index) => {
+                        // Check if we need a new page
+                        if (yPos > pageHeight - 30) {
+                            doc.addPage();
+                            yPos = margin;
                         }
-                    }
-                });
-                
-                // Convert chart to image and add to PDF
-                setTimeout(() => {
-                    const chartImage = tempCanvas.toDataURL('image/png');
-                    
-                    if (yPosition > pageHeight - 80) {
-                        doc.addPage();
-                        yPosition = margin + 10;
-                    }
-                    
-                    doc.addImage(chartImage, 'PNG', margin, yPosition, 120, 60);
-                    yPosition += 70;
-                    
-                    // Destroy the chart
-                    ratingChart.destroy();
-                    
-                    // Create pie chart for respondent types
-                    const pieChart = new Chart(tempCtx, {
-                        type: 'doughnut',
-                        data: {
-                            labels: ['Internal', 'Eksternal'],
-                            datasets: [{
-                                data: [internal, external],
-                                backgroundColor: [
-                                    'rgba(128, 0, 32, 0.8)',
-                                    'rgba(205, 92, 92, 0.8)'
-                                ],
-                                borderColor: [
-                                    'rgba(128, 0, 32, 1)',
-                                    'rgba(205, 92, 92, 1)'
-                                ],
-                                borderWidth: 2
-                            }]
-                        },
-                        options: {
-                            responsive: false,
-                            animation: false,
-                            plugins: {
-                                title: {
-                                    display: true,
-                                    text: 'Komposisi Responden',
-                                    font: { size: 16, weight: 'bold' },
-                                    color: 'rgb(128, 0, 32)'
-                                },
-                                legend: {
-                                    position: 'bottom',
-                                    labels: { font: { size: 12 } }
-                                }
-                            }
-                        }
-                    });
-                    
-                    setTimeout(() => {
-                        const pieImage = tempCanvas.toDataURL('image/png');
-                        doc.addImage(pieImage, 'PNG', margin + 130, yPosition - 70, 60, 60);
-                        pieChart.destroy();
+
+                        const priority = feedback.rating < 3 ? 'URGENT' : feedback.rating < 4 ? 'PENTING' : 'INFO';
                         
-                        // Continue with the rest of the PDF
-                        continueGeneratingPDF();
-                    }, 500);
-                }, 500);
-                
-            } catch (error) {
-                console.log('Chart generation failed, continuing without charts');
-                continueGeneratingPDF();
-            }
-            
-            function continueGeneratingPDF() {
-                // Key Findings
-                yPosition += 10;
-                yPosition = addSectionHeader('TEMUAN UTAMA', yPosition);
+                        doc.setFont('helvetica', 'bold');
+                        doc.text(`${index + 1}. ${feedback.responder} (${feedback.division}) - Rating: ${feedback.rating.toFixed(1)} [${priority}]`, margin, yPos);
+                        yPos += 5;
+                        
+                        doc.setFont('helvetica', 'normal');
+                        const feedbackText = doc.splitTextToSize(`"${feedback.content}"`, contentWidth - 5);
+                        doc.text(feedbackText, margin + 3, yPos);
+                        yPos += feedbackText.length * 4 + 3;
+                    });
+                }
+
+                // Check if we need a new page
+                if (yPos > pageHeight - 60) {
+                    doc.addPage();
+                    yPos = margin;
+                }
+
+                yPos += 10;
+
+                // Rekomendasi
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(14);
+                doc.setTextColor(128, 0, 32);
+                doc.text('VI. REKOMENDASI PERBAIKAN', margin, yPos);
+                yPos += 10;
 
                 doc.setFont('helvetica', 'normal');
-                doc.setFontSize(9);
-
-                const keyFindings = [
-                    `• Tingkat kepuasan keseluruhan: ${avgRating >= 4 ? 'Tinggi' : avgRating >= 3 ? 'Sedang' : 'Rendah'} (${avgRating.toFixed(1)}/5.0)`,
-                    `• Konsistensi penilaian: ${calculateStandardDeviation(ratings) < 1 ? 'Konsisten' : 'Bervariasi'} (SD: ${calculateStandardDeviation(ratings).toFixed(2)})`,
-                    `• Partisipasi responden: ${currentData.length >= 30 ? 'Memadai' : 'Perlu ditingkatkan'} (${currentData.length} responden)`,
-                    `• Keseimbangan perspektif: ${Math.abs(internal - external) <= 10 ? 'Seimbang' : 'Tidak seimbang'} (Internal: ${internal}, Eksternal: ${external})`,
-                    `• Area yang perlu perhatian: ${ratingCounts[1] + ratingCounts[2] > 0 ? `${ratingCounts[1] + ratingCounts[2]} responden memberikan rating rendah` : 'Tidak ada rating rendah'}`
-                ];
-
-                keyFindings.forEach(finding => {
-                    if (yPosition > pageHeight - 20) {
-                        doc.addPage();
-                        yPosition = margin + 10;
-                    }
-                    doc.text(finding, margin, yPosition);
-                    yPosition += 5;
-                });
-
-                // Recommendations
-                yPosition += 10;
-                yPosition = addSectionHeader('REKOMENDASI STRATEGIS', yPosition);
-
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(9);
+                doc.setFontSize(11);
+                doc.setTextColor(0, 0, 0);
 
                 const recommendations = [
-                    '1. JANGKA PENDEK (1-3 bulan):',
-                    '   • Tindak lanjut segera untuk rating di bawah 3.0 dengan action plan spesifik',
-                    '   • Perbaikan komunikasi dengan stakeholder melalui regular meeting',
-                    '   • Peningkatan responsivitas layanan dengan SLA yang jelas',
-                    '   • Quick wins implementation untuk boost morale dan kepercayaan',
+                    'A. PRIORITAS TINGGI:',
+                    '• Perbaikan sistem AC dan ventilasi di seluruh gedung',
+                    '• Peningkatan kebersihan dan maintenance toilet',
+                    '• Perbaikan sistem lift yang sering bermasalah',
                     '',
-                    '2. JANGKA MENENGAH (3-6 bulan):',
-                    '   • Implementasi sistem monitoring kualitas real-time dengan dashboard',
-                    '   • Pelatihan komprehensif untuk seluruh staff building management',
-                    '   • Standardisasi prosedur operasional dengan dokumentasi lengkap',
-                    '   • Pembentukan tim quality assurance internal',
+                    'B. PRIORITAS SEDANG:',
+                    '• Perluasan area parkir untuk kendaraan',
+                    '• Pelatihan customer service untuk staff',
+                    '• Upgrade infrastruktur IT dan jaringan wifi',
                     '',
-                    '3. JANGKA PANJANG (6-12 bulan):',
-                    '   • Pengembangan sistem feedback berkelanjutan dengan teknologi',
-                    '   • Evaluasi dan penyesuaian struktur organisasi sesuai kebutuhan',
-                    '   • Implementasi teknologi IoT untuk efisiensi layanan gedung',
-                    '   • Sertifikasi internasional untuk building management excellence',
+                    'C. PRIORITAS RENDAH:',
+                    '• Peningkatan variasi menu kantin',
+                    '• Perbaikan sound system ruang meeting',
+                    '• Penyederhanaan proses administrasi',
                     '',
-                    '4. MONITORING DAN EVALUASI:',
-                    '   • Evaluasi bulanan dengan KPI yang terukur',
-                    '   • Survey kepuasan triwulanan untuk tracking progress',
-                    '   • Benchmarking dengan best practices industri',
-                    '   • Continuous improvement culture development'
+                    'D. TINDAK LANJUT:',
+                    '• Evaluasi berkala setiap 3 bulan',
+                    '• Monitoring implementasi perbaikan',
+                    '• Feedback loop dengan responden'
                 ];
 
-                recommendations.forEach(rec => {
-                    if (yPosition > pageHeight - 25) {
-                        doc.addPage();
-                        yPosition = margin + 10;
+                recommendations.forEach(line => {
+                    if (line.trim()) {
+                        const splitText = doc.splitTextToSize(line, contentWidth);
+                        doc.text(splitText, margin, yPos);
+                        yPos += splitText.length * 5;
+                    } else {
+                        yPos += 3;
                     }
-                    doc.text(rec, margin, yPosition);
-                    yPosition += 4;
                 });
 
-                // Conclusion
-                yPosition += 10;
-                yPosition = addSectionHeader('KESIMPULAN', yPosition);
-                
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(9);
-                
-                const conclusion = [
-                    `Berdasarkan evaluasi komprehensif terhadap ${currentData.length} responden, building management OJK DIY`,
-                    `menunjukkan kinerja ${avgRating >= 4 ? 'excellent' : avgRating >= 3.5 ? 'baik' : avgRating >= 3 ? 'cukup' : 'yang perlu perbaikan'} dengan rating rata-rata ${avgRating.toFixed(2)}/5.0.`,
-                    ``,
-                    `Tingkat kepuasan ${((ratings.filter(r => r >= 4).length/ratings.length)*100).toFixed(1)}% responden menunjukkan ${ratings.filter(r => r >= 4).length/ratings.length >= 0.7 ? 'mayoritas puas' : 'masih ada ruang perbaikan'}.`,
-                    `Dengan implementasi rekomendasi yang sistematis dan terukur, diharapkan dapat mencapai`,
-                    `target excellence dalam pelayanan building management.`,
-                    ``,
-                    `Laporan ini menjadi baseline untuk continuous improvement dan monitoring berkala`,
-                    `guna memastikan kualitas pelayanan yang optimal bagi seluruh stakeholder OJK DIY.`
-                ];
-                
-                conclusion.forEach(line => {
-                    if (yPosition > pageHeight - 25) {
-                        doc.addPage();
-                        yPosition = margin + 10;
-                    }
-                    doc.text(line, margin, yPosition);
-                    yPosition += 4;
-                });
-
-                // Footer with maroon theme
+                // Footer
                 const totalPages = doc.internal.getNumberOfPages();
                 for (let i = 1; i <= totalPages; i++) {
                     doc.setPage(i);
-                    
-                    // Footer background
-                    doc.setFillColor(...maroonDark);
-                    doc.rect(0, pageHeight - 15, pageWidth, 15, 'F');
-                    
+                    doc.setFont('helvetica', 'normal');
                     doc.setFontSize(8);
-                    doc.setTextColor(255, 255, 255);
-                    doc.text(`Halaman ${i} dari ${totalPages}`, pageWidth - 35, pageHeight - 5);
-                    doc.text(`© ${new Date().getFullYear()} OJK DIY - Building Management Evaluation Report`, margin, pageHeight - 5);
-                    doc.text(`Generated: ${new Date().toLocaleString('id-ID')}`, margin, pageHeight - 10);
+                    doc.setTextColor(128, 128, 128);
+                    doc.text(`Halaman ${i} dari ${totalPages}`, pageWidth - margin - 20, pageHeight - 5);
+                    doc.text('Laporan Evaluasi Building Management OJK DIY', margin, pageHeight - 5);
                 }
 
-                // Save PDF with enhanced filename
-                const timestamp = new Date().toISOString().replace(/[:.]/g, '-').split('T')[0];
-                doc.save(`Laporan_Evaluasi_Building_Management_OJK_DIY_${timestamp}_Comprehensive.pdf`);
-            }
-        }
-        }
+                // Save PDF
+                const timestamp = new Date().toISOString().split('T')[0];
+                doc.save(`Laporan_Evaluasi_Building_Management_OJK_DIY_${timestamp}.pdf`);
 
-        function calculateStandardDeviation(values) {
-            const mean = values.reduce((a, b) => a + b, 0) / values.length;
-            const squaredDiffs = values.map(value => Math.pow(value - mean, 2));
-            const avgSquaredDiff = squaredDiffs.reduce((a, b) => a + b, 0) / values.length;
-            return Math.sqrt(avgSquaredDiff);
-        }
-
-        function calculateMedian(values) {
-            const sorted = [...values].sort((a, b) => a - b);
-            const mid = Math.floor(sorted.length / 2);
-            return sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
-        }
-
-        function calculateMode(values) {
-            const frequency = {};
-            values.forEach(value => {
-                const rounded = Math.round(value);
-                frequency[rounded] = (frequency[rounded] || 0) + 1;
-            });
-            
-            let maxFreq = 0;
-            let mode = 0;
-            for (const [value, freq] of Object.entries(frequency)) {
-                if (freq > maxFreq) {
-                    maxFreq = freq;
-                    mode = parseInt(value);
-                }
-            }
-            return mode;
-        }
-
-        // Refresh button
-        document.getElementById('refreshBtn').addEventListener('click', () => {
-            location.reload();
-        });
-
-        // Add sample data button for testing
-        function loadSampleData() {
-            const sampleCSV = `Timestamp,Nama,Division,Instansi,Type,Rating,Reason,Feedback Umum
-2024-01-15 09:30:00,Ahmad Wijaya,IT,OJK DIY,Internal,4.5,"Pelayanan sangat baik dan responsif","Terus tingkatkan kualitas pelayanan"
-2024-01-15 10:15:00,Siti Nurhaliza,Keuangan,OJK DIY,Internal,4.2,"Staff ramah dan profesional","Perlu peningkatan di area kebersihan"
-2024-01-15 11:00:00,Budi Santoso,Operasional,OJK DIY,Internal,3.8,"Cukup baik tapi masih ada yang perlu diperbaiki","Sistem AC perlu diperbaiki"
-2024-01-15 14:30:00,Dr. Maya Sari,Akademisi,Universitas Gadjah Mada,External,4.0,"Fasilitas lengkap dan memadai","Parkir perlu diperluas"
-2024-01-15 15:45:00,Eko Prasetyo,Pengawasan,OJK DIY,Internal,3.5,"Pelayanan standar","Perlu pelatihan customer service"
-2024-01-16 08:00:00,Lisa Permata,Hukum,OJK DIY,Internal,4.8,"Excellent service, very satisfied","Keep up the good work"
-2024-01-16 09:30:00,Rudi Hartono,Konsultan,PT Mandiri Konsultan,External,3.2,"Kurang responsif dalam menangani keluhan","Perlu sistem complaint yang lebih baik"
-2024-01-16 10:15:00,Indira Sari,Komunikasi,OJK DIY,Internal,4.1,"Baik secara keseluruhan","Tingkatkan koordinasi antar divisi"
-2024-01-16 11:30:00,Prof. Bambang,Peneliti,LIPI,External,4.3,"Fasilitas penelitian sangat mendukung","Akses internet perlu dipercepat"
-2024-01-16 13:00:00,Dewi Lestari,SDM,OJK DIY,Internal,2.8,"Banyak hal yang perlu diperbaiki","Sistem booking ruangan tidak user-friendly"
-2024-01-17 08:30:00,Agus Setiawan,Teknologi,OJK DIY,Internal,4.6,"Infrastruktur IT sangat baik","Maintenance rutin perlu dijadwalkan"
-2024-01-17 10:00:00,Maria Santos,Auditor,KAP Santos & Partners,External,3.9,"Cukup memuaskan","Ruang meeting perlu sound system yang lebih baik"
-2024-01-17 14:15:00,Hendra Kusuma,Pemasaran,OJK DIY,Internal,3.1,"Masih banyak kekurangan","Staff perlu training komunikasi"
-2024-01-17 15:30:00,Dr. Ratna,Konsultan,Konsultan Independen,External,4.4,"Pelayanan profesional","Sistem keamanan sudah baik"
-2024-01-18 09:00:00,Yudi Pratama,Administrasi,OJK DIY,Internal,3.7,"Cukup baik tapi bisa lebih baik","Proses administrasi perlu disederhanakan"`;
-            
-            try {
-                parseCSV(sampleCSV);
-                document.getElementById('fileName').textContent = 'Data Contoh (Sample Data)';
-                document.getElementById('dataCount').textContent = currentData.length;
-                fileInfo.classList.remove('hidden');
-                alert('Data contoh berhasil dimuat! Anda dapat melihat dashboard dan mencoba fitur download PDF.');
             } catch (error) {
-                console.error('Error loading sample data:', error);
-                alert('Error loading sample data: ' + error.message);
+                console.error('Error generating PDF:', error);
+                alert('Terjadi kesalahan saat membuat PDF: ' + error.message);
+            } finally {
+                // Reset button
+                exportBtn.innerHTML = '<i class="fas fa-file-pdf text-xl mr-2"></i><span>Download Laporan PDF</span>';
+                exportBtn.disabled = false;
             }
         }
-
-        // Add sample data button to upload area
-        const sampleDataBtn = document.createElement('button');
-        sampleDataBtn.className = 'mt-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white px-6 py-2 rounded-xl font-medium transition-all duration-300 flex items-center space-x-2 mx-auto';
-        sampleDataBtn.innerHTML = '<i class="fas fa-database"></i><span>Muat Data Contoh</span>';
-        sampleDataBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('Sample data button clicked');
-            loadSampleData();
-        });
-        uploadArea.appendChild(sampleDataBtn);
-
-        // Add debug button for testing file input
-        const debugBtn = document.createElement('button');
-        debugBtn.className = 'mt-2 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-all duration-300 flex items-center space-x-2 mx-auto text-sm';
-        debugBtn.innerHTML = '<i class="fas fa-bug"></i><span>Test File Input</span>';
-        debugBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            console.log('=== DEBUG TEST ===');
-            console.log('File input element:', fileInput);
-            console.log('File input type:', fileInput.type);
-            console.log('File input accept:', fileInput.accept);
-            console.log('Upload area element:', uploadArea);
-            console.log('Triggering file input click...');
-            fileInput.click();
-        });
-        uploadArea.appendChild(debugBtn);
     </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'979cac1f5645ce61',t:'MTc1Njk4MDM2Ny4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'97bb4c4d470b99a9',t:'MTc1NzMwMTUwMS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
